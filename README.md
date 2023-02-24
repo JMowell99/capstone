@@ -1,5 +1,5 @@
 # Capstone
-Steve, Mustafa, Ronny, and Josh, make sure that you either: (preferably) create a python virtual environment before running this; or at minimum, install all the dependencies.  To start hosting the website, simply run the main.py file once you have installed the depencies (instuctions below).
+Steve, Mustafa, Ronny, and Josh, make sure that you either: (preferably) create a python virtual environment before running this; or at minimum, install all the dependencies to your global python instance.  To start hosting the website, simply run the main.py file once you have installed the depencies (instuctions below).
 
 ## Checking out this repo
 ```bash
