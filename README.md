@@ -44,13 +44,13 @@ Towards the end of the main.py, there is a condition about the IP. That IP is wh
 
 ### MAC
 #### Wireless
-```bash ipconfig getifaddr en0 ```
+```ipconfig getifaddr en0 ```
 
 #### Ethernet
-```bash ifconfig en0 | grep inet | grep -v inet6 | awk '{print $2}'  ```
+```ifconfig en0 | grep inet | grep -v inet6 | awk '{print $2}'  ```
 
 ### WINDOWS
 #### Wirelss
-```bash ipconfig | findstr IPv4 ```
+```ipconfig | findstr IPv4 ```
 #### Ethernet
-```bash ipconfig /all | findstr /C:"Ethernet adapter" -A 4 | findstr "IPv4" ```
+```ipconfig /all | findstr /C:"Ethernet adapter" -A 4 | findstr "IPv4" ```
