@@ -22,12 +22,12 @@ NOTE: The name that you use for your ```bash git push``` has to exactly match th
 ```bash
 python3 -m venv /path/to/new/virtual/environment
 ```
-(MAC)
+#### MAC
 ```bash
 source ./bin/activate
 pip install -r requirements.txt
 ```
-(WINDOWS)
+#### WINDOWS
 ```bash
 c:\>c:\Python35\python -m venv c:\path\to\myenv
 pip install -r requirements.txt
@@ -42,8 +42,8 @@ If you use this option, please please please do not commit your requirements.txt
 ## Note about website
 Towards the end of the main.py, there is a condition about the IP. That IP is what my laptop is on the OSU wifi, which doesn't let me host the website, so I changed it to be on localhost if it detects that I am on OSU wifi; otherwise, the site will run as whatever your device's local IP address is.  You will need to change the IP it needs to check if you want it to do the same for you on osu wifi. Your local IP can be found pretty easy.
 
-(MAC)
+#### MAC
 ```bash ipconfig getifaddr en0 ``` if on wireless, and ```bash ipconfig getifaddr en1 ``` if on ethernet
 
-(WINDOWS)
+#### WINDOWS
 ```bash ipconfig | findstr IPv4 ``` if on wireless, and ```bash ipconfig /all | findstr /C:"Ethernet adapter" -A 4 | findstr "IPv4"
