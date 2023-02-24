@@ -37,7 +37,7 @@ pip install -r requirements.txt
 ```bash
 pip install -r requirements.txt
 ```
-If you use this option, please please please do not commit your requirements.txt to the repo.  This won't be an issue unless you run a ```bash pip freeze > requirements.txt```. I don't see you guys doing this, but just in case.
+If you use this option, please please please do not commit your requirements.txt to the repo.  This won't be an issue unless you run a ```pip freeze > requirements.txt```. I don't see you guys doing this, but just in case.
 
 ## Note about website
 Towards the end of the main.py, there is a condition about the IP. That IP is what my laptop is on the OSU wifi, which doesn't let me host the website, so I changed it to be on localhost if it detects that I am on OSU wifi; otherwise, the site will run as whatever your device's local IP address is.  You will need to change the IP it needs to check if you want it to do the same for you on osu wifi. Your local IP can be found pretty easy.
