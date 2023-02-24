@@ -1,5 +1,5 @@
 # capstone
-Steve, Mustafa, Ronny, and Josh, make sure that you either; (preferably) create a python virtual environment before running this, or install all the dependencies.
+Steve, Mustafa, Ronny, and Josh, make sure that you either; (preferably) create a python virtual environment before running this, at minimum install all the dependencies.
 
 
 1) Python virtual environment
