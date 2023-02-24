@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+import platform
 import subprocess
 
 app = Flask(__name__)
@@ -104,8 +105,18 @@ def health_data():
         db.session.commit()
         return jsonify({'message': 'Health data added successfully.'}), 201
 
-output = subprocess.check_output(['ipconfig', 'getifaddr', 'en0'])
-ip = output.strip().decode('utf-8')
+os = platform.system()
+if os == "Darwin":
+    output = subprocess.check_output(['ipconfig', 'getifaddr', 'en0'])
+    ip = output.strip().decode('utf-8')
+elif os == "Windows":
+    ipconfig_result = subprocess.check_output(['ipconfig'])
+    ipconfig_result_str = ipconfig_result.decode('utf-8')
+    ipconfig_lines = ipconfig_result_str.split('\n')
+    for line in ipconfig_lines:
+        if 'IPv4 Address' in line:
+            ip = line.split(':')[-1].strip()
+
 if ip == "172.28.24.178":
     ip = "localhost"
 
