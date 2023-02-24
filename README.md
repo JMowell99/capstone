@@ -15,7 +15,7 @@ git add .
 git commit -m "Your commit message. Descibe changes in a few words"
 git push origin NAME_FOR_YOUR_CHANGES
 ```
-NOTE: The name that you use for your ```bash git push``` has to exactly match the name you gave your branch when you checked it out.
+NOTE: The name that you use for your ```git push``` has to exactly match the name you gave your branch when you checked it out.
 
 ## Installing dependacies
 ### Option 1: Python virtual environment
