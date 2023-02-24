@@ -6,7 +6,7 @@ Steve, Mustafa, Ronny, and Josh, make sure that you either: (preferably) create 
 git clone https://github.com/JMowell99/capstone.git
 git checkout -b NAME_FOR_YOUR_CHANGES
 ```
-The ```bash -b ``` creates a new "branch" called whatever you like, this is done so that any changes you are making don't interfere with anything that I am doing and vice versa.  If you made some changes you would like to see integrated into the "master" branch (the one you see when you open this repo in github), then just say something to me and I will "merge" your branch into master. If all of this GitHub lingo is confusing, check out [this video](https://www.youtube.com/watch?v=j7YDbrS9I48&ab_channel=RobertChatfield).
+The ```-b ``` creates a new "branch" called whatever you like, this is done so that any changes you are making don't interfere with anything that I am doing and vice versa.  If you made some changes you would like to see integrated into the "master" branch (the one you see when you open this repo in github), then just say something to me and I will "merge" your branch into master. If all of this GitHub lingo is confusing, check out [this video](https://www.youtube.com/watch?v=j7YDbrS9I48&ab_channel=RobertChatfield).
 
 ## Commiting your changes to the repo
 Make sure you are in the top level folder/directory of the repo when you run these commands, or else it will not work. This again, will most likely not be an issue, but I just wanted to clarify.
