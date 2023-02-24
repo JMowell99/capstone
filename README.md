@@ -43,7 +43,14 @@ If you use this option, please please please do not commit your requirements.txt
 Towards the end of the main.py, there is a condition about the IP. That IP is what my laptop is on the OSU wifi, which doesn't let me host the website, so I changed it to be on localhost if it detects that I am on OSU wifi; otherwise, the site will run as whatever your device's local IP address is.  You will need to change the IP it needs to check if you want it to do the same for you on osu wifi. Your local IP can be found pretty easy.
 
 #### MAC
-```bash ipconfig getifaddr en0 ``` if on wireless, and ```bash ipconfig getifaddr en1 ``` if on ethernet
+Wireless
+```bash ipconfig getifaddr en0 ```
+
+Ethernet
+```bash ifconfig en0 | grep inet | grep -v inet6 | awk '{print $2}'  ```
 
 #### WINDOWS
-```bash ipconfig | findstr IPv4 ``` if on wireless, and ```bash ipconfig /all | findstr /C:"Ethernet adapter" -A 4 | findstr "IPv4"
+Wirelss
+```bash ipconfig | findstr IPv4 ```
+Ethernet
+```bash ipconfig /all | findstr /C:"Ethernet adapter" -A 4 | findstr "IPv4" ```
