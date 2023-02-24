@@ -24,7 +24,7 @@ python3 -m venv /path/to/new/virtual/environment
 ```
 #### MAC
 ```bash
-source ./bin/activate
+src ./bin/activate
 pip install -r requirements.txt
 ```
 #### WINDOWS
