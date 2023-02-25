@@ -96,16 +96,15 @@ def health_data():
     elif request.method == 'POST':
         data = request.get_json()
         user_id = data.get('user_id')
-        username = data.get('username')
-        password = data.get('password')
         heart_rate = data.get('heart_rate')
         body_temp = data.get('body_temp')
         respiration_rate = data.get('respiration_rate')
-        new_health_data = UserData(user_id=user_id, username=username, password=password, heart_rate=heart_rate, body_temp=body_temp, respiration_rate=respiration_rate)
+        new_health_data = UserData(user_id=user_id, heart_rate=heart_rate, body_temp=body_temp, respiration_rate=respiration_rate)
         new_health_data.add_temp_reading(body_temp)
         db.session.add(new_health_data)
         db.session.commit()
         return jsonify({'message': 'Health data added successfully.'}), 201
+
 # This isn't working yet. I want it to only display the data for the currently signed in user
 """
 @app.route('/userData')
