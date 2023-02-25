@@ -1,0 +1,63 @@
+.menu-icon {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+.menu-line {
+  width: 30px;
+  height: 4px;
+  margin: 6px 0;
+  background-color: #000;
+}
+
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100vh;
+  background-color: #fff;
+  overflow: hidden;
+  transition: width 0.3s ease-in-out;
+  z-index: 9998;
+}
+
+.menu a {
+  display: block;
+  padding: 20px;
+  font-size: 18px;
+  color: #000;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.menu a:hover {
+  background-color: #f1f1f1;
+}
+
+.menu-icon:hover .menu {
+  width: 200px;
+  display: block;
+  background-color: gray;
+}
+
+body {
+  padding-left: 50px; /* change the value of this property as needed */
+  margin-top: 60px; /* adjust the margin-top value to match the height of the menu */
+  overflow-x: hidden; /* prevent horizontal overflow */
+}
+
+.menu-open body {
+  overflow: hidden; /* prevent scrolling when the menu is open */
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+}

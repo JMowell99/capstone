@@ -3,13 +3,26 @@
 <head>
 	<title>Team 02 Home Page</title>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="styleshhet" type="text/css" href="/static/css/styles.css">
+	<link rel="stylesheet" type="text/css" href="../static/css/styles.css">
 </head>
 <body>
-	<h1>Welcome!</h1>
+	<div class="menu-icon">
+		<div class="menu-line"></div>
+		<div class="menu-line"></div>
+		<div class="menu-line"></div>
+	  
+	  <div class="menu">
+		<a href="/about">About Us</a>
+		<a href="/">Home</a>
+		<a href="/myData">See Your Data</a>
+	  </div>
+	  </div>
+	  <script src="../static/scripts/scripts.js"></script>
+	<div class="center"><h1>Welcome!</h1>
 	<p>The time below is being collected from an API :)</p>
 	<p id="time"></p>
     <button onclick="window.location.href='about'">About Us</button>
+	</div>
 	<script>
 		$(document).ready(function() {
 			$.ajax({
