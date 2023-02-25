@@ -5,8 +5,10 @@ import subprocess
 
 app = Flask(__name__)
 
-# Configuration settings for the database
+# Configuration settings for the databases
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///health_data.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize the SQLAlchemy instance
@@ -22,6 +24,12 @@ class HealthData(db.Model):
     body_temp = db.Column(db.Float, nullable=False)
     respiration_rate = db.Column(db.Integer, nullable=False)
 
+# Define the User model
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.Integer, nullable=False)
+    
 ACCESS_TOKEN = "ECE3906"
 
 # Decorator to check if the request has a valid access token
@@ -39,29 +47,15 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        if username == 'Jesse' and password == 'Team02':
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
             session['logged_in'] = True
             return redirect(url_for('home'))
-        if username == 'Josh' and password == 'Team02':
-            session['logged_in'] = True
-            return redirect(url_for('home'))
-        if username == 'Steve' and password == 'Team02':
-            session['logged_in'] = True
-            return redirect(url_for('home'))
-        if username == 'Ronny' and password == 'Team02':
-            session['logged_in'] = True
-            return redirect(url_for('home'))
-        if username == 'Mustafa' and password == 'Team02':
-            session['logged_in'] = True
-            return redirect(url_for('home'))
-        if username == 'Berger' and password == 'Team02':
-            session['logged_in'] = True
-            return redirect(url_for('home'))
-        
         else:
             return render_template('login.html', error='Invalid username or password')
     else:
         return render_template('login.html')
+
 
 
 # Decorator to check if the user is logged in
@@ -104,6 +98,20 @@ def health_data():
         db.session.add(new_health_data)
         db.session.commit()
         return jsonify({'message': 'Health data added successfully.'}), 201
+
+@app.route('/newUser', methods=['POST'])
+@require_token
+def new_user():
+    if request.method == 'POST':
+        data = request.get_json()
+        username = data.get('username')
+        password = data.get('password')
+        new_user = User(username=username, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({'message': 'New user credentials added successfully.'}), 201
+    else:
+        return jsonify({'message': 'Not a supported method'}), 400
 
 os = platform.system()
 if os == "Darwin":
