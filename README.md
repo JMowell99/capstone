@@ -39,7 +39,11 @@ pip install -r requirements.txt
 ```
 If you use this option, please please please do not commit your requirements.txt to the repo.  This won't be an issue unless you run a ```pip freeze > requirements.txt```. I don't see you guys doing this, but just in case.
 
-## Note about website
+## Note 1 about website
+The database is not uploaded to github so when you run the website for the first time you have add your own credentials. This can be done with a simple curl command once the website is up and running. Make sure to change the corresponding values in the curl call.
+''' curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ECE3906" -d '{"username": "YOUR_NAME", "password": "YOUR_PASSWORD"}'      http://YOUR_IP:3906/userData
+'''
+## Note 2 about website
 Towards the end of the main.py, there is a condition about the IP. That IP is what my laptop is on the OSU WiFi, which doesn't let me host the website, so I changed it to be on localhost if it detects that I am on OSU WiFi; otherwise, the site will run as whatever your device's local IP address is.  You will need to change the IP it needs to check if you want it to do the same for you on osu WiFi. Your local IP can be found pretty easily.  I'm assuming you are going to be using WiFi and not ethernet, so here are the commands.
 
 #### MAC
