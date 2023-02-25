@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Display User Data</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+</head>
+<body>
+    <h1>User Data</h1>
+    <ul id="user-data"></ul>
+
+    <script>
+        const userDataList = document.getElementById('user-data');
+        const userIdInput = document.getElementById('user-id');
+
+        userIdInput.addEventListener('change', () => {
+            const userId = userIdInput.value;
+            if (userId) {
+                // Make API call to endpoint with user ID
+                fetch(`userData?user_id=${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Clear previous results
+                        userDataList.innerHTML = '';
+
+                        // Display new results on the web page
+                        for (const [key, value] of Object.entries(data)) {
+                            const listItem = document.createElement('li');
+                            listItem.innerHTML = `${key}: ${value}`;
+                            userDataList.appendChild(listItem);
+                        }
+                    })
+                    .catch(error => console.error(error));
+            } else {
+                // Clear results if user ID is empty
+                userDataList.innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>

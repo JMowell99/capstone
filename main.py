@@ -7,9 +7,8 @@ import json
 app = Flask(__name__)
 
 # Configuration settings for the databases
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///health_data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user_data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_BINDS'] = {'users': 'sqlite:///users.db'}
 
 # Initialize the SQLAlchemy instance
 db = SQLAlchemy(app)
@@ -17,12 +16,14 @@ db = SQLAlchemy(app)
 app.config['SECRET_KEY'] = 'secret-key'
 
 # Define the HealthData model
-class HealthData(db.Model):
+class UserData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(50), nullable=False)
-    heart_rate = db.Column(db.Integer, nullable=False)
-    body_temp = db.Column(db.Float, nullable=False)
-    respiration_rate = db.Column(db.Integer, nullable=False)
+    username = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.String(50), nullable=True)
+    heart_rate = db.Column(db.Integer, nullable=True)
+    body_temp = db.Column(db.Float, nullable=True)
+    respiration_rate = db.Column(db.Integer, nullable=True)
     body_temp_history = db.Column(db.String(100), nullable=True)
 
     def add_temp_reading(self, temp_reading):
@@ -32,14 +33,6 @@ class HealthData(db.Model):
         temp_history.append(temp_reading)
         temp_history = temp_history[-3:]
         self.body_temp_history = json.dumps(temp_history)
-
-
-# Define the User model
-class User(db.Model):
-    __bind_key__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False)
-    password = db.Column(db.Integer, nullable=False)
     
 ACCESS_TOKEN = "ECE3906"
 
@@ -55,10 +48,11 @@ def require_token(f):
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    token = ACCESS_TOKEN
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = User.query.filter_by(username=username).first()
+        user = UserData.query.filter_by(username=username).first()
         if user and user.password == password:
             session['logged_in'] = True
             return redirect(url_for('home'))
@@ -94,7 +88,7 @@ def about():
 def health_data():
     if request.method == 'GET':
         user_id = request.args.get('user_id')
-        health_data = HealthData.query.filter_by(user_id=user_id).first()
+        health_data = UserData.query.filter_by(user_id=user_id).first()
         if health_data:
             return jsonify({'user_id': user_id, 'heart_rate': health_data.heart_rate, 'body_temp': health_data.body_temp, 'body_temp_history': json.loads(health_data.body_temp_history), 'respiration_rate': health_data.respiration_rate}), 200
         else:
@@ -102,15 +96,54 @@ def health_data():
     elif request.method == 'POST':
         data = request.get_json()
         user_id = data.get('user_id')
+        username = data.get('username')
+        password = data.get('password')
         heart_rate = data.get('heart_rate')
         body_temp = data.get('body_temp')
         respiration_rate = data.get('respiration_rate')
-        new_health_data = HealthData(user_id=user_id, heart_rate=heart_rate, body_temp=body_temp, respiration_rate=respiration_rate)
+        new_health_data = UserData(user_id=user_id, username=username, password=password, heart_rate=heart_rate, body_temp=body_temp, respiration_rate=respiration_rate)
         new_health_data.add_temp_reading(body_temp)
         db.session.add(new_health_data)
         db.session.commit()
         return jsonify({'message': 'Health data added successfully.'}), 201
+# This isn't working yet. I want it to only display the data for the currently signed in user
+"""
+@app.route('/userData')
+def user_data():
+    if 'logged_in' in session and session['logged_in']:
+        # Get user ID associated with username and password used to log in
+        username = request.authorization.username
+        password = request.authorization.password
+        user = UserData.query.filter_by(username=username).first()
+        if user and user.password == password:
+            user_id = user.id
 
+            # Get user data using user ID
+            data = get_user_data(user_id)
+
+            # Return user data as JSON
+            return jsonify(data)
+        else:
+            # Return error if username and password do not match
+            return jsonify({'error': 'Invalid username or password'})
+    else:
+        # Return error if user is not logged in
+        return jsonify({'error': 'Unauthorized access'})
+
+def get_user_data(user_id):
+    # Retrieve user data from database based on user ID
+    user = UserData.query.filter_by(id=user_id).first()
+    if user:
+        data = {
+            'user_id': user.id,
+            'username': user.username,
+            'email': user.email
+            # Add more key/value pairs as needed
+        }
+        return data
+    else:
+        return None
+"""
 @app.route('/newUser', methods=['POST'])
 @require_token
 def new_user():
@@ -118,7 +151,7 @@ def new_user():
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')
-        new_user = User(username=username, password=password)
+        new_user = UserData(username=username, password=password)
         db.session.add(new_user)
         db.session.commit()
         return jsonify({'message': 'New user credentials added successfully.'}), 201
