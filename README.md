@@ -40,6 +40,7 @@ pip install -r requirements.txt
 ```
 ##### MAC
 ```bash
+python -m venv .venv
 src ./.venv/bin/actiavte
 pip install -r requirements.txt
 ```
