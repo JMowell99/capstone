@@ -28,7 +28,7 @@ NOTE: The name that you use for your ```git push``` has to exactly match the nam
 ## Running the code
 In order to run the code you also have to have python installed.  You can find that [here](https://www.python.org/downloads/windows). for windows, or [here](https://www.python.org/downloads/macos/). for MacOS.
 ### Step 1 - Installing dependacies
-There are two options here, creating a "virtual environment" of python to install to, or just installing the dependencies to your "global" python version; more info on that [here](https://www.youtube.com/watch?v=IAvAlS0CuxI&ab_channel=NeuralNine)., the first 2 minutes or so explain why.  Once you have your virtual environment running, you should see a ```(.venv)``` on your screen every time you run a command.
+There are two options here, creating a "virtual environment" of python to install to, or just installing the dependencies to your "global" python version; more info on that [here](https://www.youtube.com/watch?v=IAvAlS0CuxI&ab_channel=NeuralNine). The first 2 minutes or so explain why a virtual environment is preffered.  Once you have your virtual environment running, you should see a ```(.venv)``` on your screen every time you run a command.
 
 #### Option 1: Python virtual environment
 This will create and activate a virual environment; this is also the preffered option when running the code.
