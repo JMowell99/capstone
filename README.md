@@ -34,7 +34,7 @@ There are two options here, creating a "virtual environment" of python to instal
 This will activate the the virual environment that is already present in this repo. This is also the preffered option when running the code.
 ##### WINDOWS
 ```bash
-.\.venv\Scripts\activate
+.\.venv\bin\activate
 pip install -r requirements.txt
 ```
 ##### MAC
