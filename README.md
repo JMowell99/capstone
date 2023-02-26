@@ -4,7 +4,7 @@ Error Message
 Steve, Mustafa, Ronny, and Josh, make sure that you either: (preferably) create a python virtual environment before running this; or at minimum, install all the dependencies to your global python instance.  To start hosting the website, simply run the main.py file once you have installed the depencies (instuctions below).
 
 ## Copying this repo to your local computer
-In order to be able to download these files, you have to have git install. You can download it for your windows machine [here] (https://git-scm.com/download/win). The file to download is called "64-bit Git for Windows Setup". If you are on Mac, you can run these commands to install it.
+In order to be able to download these files, you have to have git install. You can download it for your windows machine [here](https://git-scm.com/download/win). The file to download is called "64-bit Git for Windows Setup". If you are on Mac, you can run these commands to install it.
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 brew install git
