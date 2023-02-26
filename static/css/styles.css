@@ -91,12 +91,12 @@ html {
 }
 
 .about-section {
-  padding: 50px;
+  padding: 10px;
   text-align: center;
   background-color: #ce0f3d;
   color: #000000;
   position: sticky;
-  height: 200px;
+  height: 150px;
   top: 0;
   left: 0;
   right: 0;
@@ -220,6 +220,6 @@ body{
 }
 
 .offset{
-  padding-top: 200px;
-  margin-top: -200px;
+  padding-top: 150px;
+  margin-top: -150px;
 }
