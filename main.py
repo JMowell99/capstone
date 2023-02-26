@@ -20,9 +20,9 @@ class UserData(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=True)
     password = db.Column(db.Integer, nullable=True)    
-    heart_rate = db.Column(db.Integer, nullable=True)
+    heart_rate = db.Column(db.PickleType, nullable=True)
     body_temp = db.Column(db.PickleType, nullable=True)
-    respiration_rate = db.Column(db.Integer, nullable=True)
+    respiration_rate = db.Column(db.PickleType, nullable=True)
     
     def set_body_temp(self, body_temp):
         if len(body_temp) > 10:
@@ -119,7 +119,7 @@ def health_data():
             heart_rate = data.get('heart_rate')
             body_temps = data.get('body_temp')
             respiration_rate = data.get('respiration_rate')
-            if isinstance(body_temps, list) and len(body_temps) <= 10:
+            if all(isinstance(lst, list) and len(lst) <= 10 for lst in [heart_rate, body_temps, respiration_rate]):
                 health_data = UserData.query.filter_by(user_id=user_id).first()
                 if health_data:
                     health_data.heart_rate = heart_rate
@@ -131,7 +131,7 @@ def health_data():
                 db.session.commit()
                 return jsonify({'message': 'Health data added/updated successfully.'}), 201
             else:
-                return jsonify({'message': 'Invalid body temperature data. Must be a list with up to 10 values.'}), 400
+                return jsonify({'message': 'Invalid health data. All data must be a list with up to 10 values.'}), 400
         elif username and password:
             user = UserData(username=username, password=password)
             db.session.add(user)
@@ -139,6 +139,11 @@ def health_data():
             return jsonify({'message': 'New user credentials added successfully.'}), 201
         else:
             return jsonify({'message': 'Missing user ID or username/password.'}), 400
+
+@app.route('/userData')
+@login_required
+def userData():
+    return render_template('userData.html')
 
 # This isn't working yet. I want it to only display the data for the currently signed in user
 """

@@ -1,35 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Line Graph Example</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <title>Health Data Charts</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+    <style>
+        h1 {
+        position: relative;
+        top: 100px;
+        z-index: 2;
+        text-align: center;
+        }
+
+        .ignore-styling {
+            color: black !important;
+            top: 0% !important;
+        }
+    </style>
   </head>
   <body>
-    <canvas id="myChart"></canvas>
-    <script>
-      // Fetch data from the API endpoint
-      fetch('healthData')
-        .then(response => response.json())
-        .then(data => {
-          // Extract the x and y values from the data
-          const xValues = data.map(d => d.x);
-          const yValues = data.map(d => d.y);
+    <div class="menu-icon">
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
 
-          // Create a line chart
-          const ctx = document.getElementById('myChart').getContext('2d');
-          const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-              labels: xValues,
-              datasets: [{
-                label: 'Data',
-                data: yValues,
-                borderColor: 'blue',
-                fill: false
-              }]
-            }
-          });
-        });
-    </script>
+      <div class="menu">
+        <a href="/about">About Us</a>
+        <a href="/">Home</a>
+        <a href="/userData">See Your Data</a>
+      </div>
+    </div>
+
+    <div class="about-section">
+        <h1 class="ignore-styling">Your Data</h1>
+        <div class="links">
+            <a href="#bodyTemp">Body Temperature</a>
+            <a href="#respirationRate">Respiration Rate</a>
+            <a href="#heartRate">Heart Rate</a>
+        </div>
+    </div>
+
+        <div id="bodyTemp" class="offset-50"></div>
+        <h1>Body Temperature</h1>
+          <div id="chart1" class="normal"></div>
+          <p class="normal double-spaced center">
+              Body temperature refers to the measurement of the body's internal heat levels. The normal range for body temperature is between 97.7°F to 99.5°F (36.5°C to 37.5°C) in adults, with slight variations depending on the time of day and physical activity.
+          </p>        
+        
+        <div id="respirationRate" class="offset-50"></div>
+        <h1>Respiration Rate</h1>
+          <div id="chart2" class="normal"></div>
+          <p class="normal double-spaced center">
+              Respiration rate refers to the number of breaths an individual takes per minute. It measures how well the body is able to exchange oxygen and carbon dioxide. The normal range for respiration rate in adults is 12 to 20 breaths per minute, with variations based on age, physical activity, and health conditions.
+          </p>        
+        
+        <div id="heartRate" class="offset-50"></div>
+        <h1>Heart Rate</h1>
+          <div id="chart3" class="normal"></div>
+          <p class="normal double-spaced center">
+              Heart rate refers to the number of times the heart beats per minute, and it indicates the strength and efficiency of the heart's pumping function. The normal range for heart rate in adults is 60 to 100 beats per minute, with variations depending on age, physical activity, and health conditions.
+          </p>        
+
+    <script src="../static/scripts/scripts.js"></script>
   </body>
 </html>
