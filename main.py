@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 from flask_sqlalchemy import SQLAlchemy
 import platform
 import subprocess
-import json
+import pickle
 
 app = Flask(__name__)
 
@@ -21,8 +21,19 @@ class UserData(db.Model):
     username = db.Column(db.String(50), nullable=True)
     password = db.Column(db.Integer, nullable=True)    
     heart_rate = db.Column(db.Integer, nullable=True)
-    body_temp = db.Column(db.Float, nullable=True)
+    body_temp = db.Column(db.PickleType, nullable=True)
     respiration_rate = db.Column(db.Integer, nullable=True)
+    
+    def set_body_temp(self, body_temp):
+        if len(body_temp) > 10:
+            raise ValueError("Body temp list can have a maximum length of 10.")
+        self.body_temp = pickle.dumps(body_temp)
+    
+    def get_body_temp(self):
+        if self.body_temp is not None:
+            return pickle.loads(self.body_temp)
+        else:
+            return None
     
 ACCESS_TOKEN = "ECE3906"
 
@@ -106,18 +117,21 @@ def health_data():
         password = data.get('password')
         if user_id:
             heart_rate = data.get('heart_rate')
-            body_temp = data.get('body_temp')
+            body_temps = data.get('body_temp')
             respiration_rate = data.get('respiration_rate')
-            health_data = UserData.query.filter_by(user_id=user_id).first()
-            if health_data:
-                health_data.heart_rate = heart_rate
-                health_data.body_temp = body_temp
-                health_data.respiration_rate = respiration_rate
+            if isinstance(body_temps, list) and len(body_temps) <= 10:
+                health_data = UserData.query.filter_by(user_id=user_id).first()
+                if health_data:
+                    health_data.heart_rate = heart_rate
+                    health_data.body_temp = body_temps
+                    health_data.respiration_rate = respiration_rate
+                else:
+                    health_data = UserData(user_id=user_id, heart_rate=heart_rate, body_temp=body_temps, respiration_rate=respiration_rate)
+                    db.session.add(health_data)
+                db.session.commit()
+                return jsonify({'message': 'Health data added/updated successfully.'}), 201
             else:
-                health_data = UserData(user_id=user_id, heart_rate=heart_rate, body_temp=body_temp, respiration_rate=respiration_rate)
-                db.session.add(health_data)
-            db.session.commit()
-            return jsonify({'message': 'Health data added/updated successfully.'}), 201
+                return jsonify({'message': 'Invalid body temperature data. Must be a list with up to 10 values.'}), 400
         elif username and password:
             user = UserData(username=username, password=password)
             db.session.add(user)
