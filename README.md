@@ -66,6 +66,7 @@ Press CTRL+C to quit
 ## Note 1 about website
 The database that stores user data / passwords is not uploaded to github so when you run the website for the first time you have add your own credentials. This can be done with a simple curl command in a terminal or command prompt once the website is up and running. The IP to use will be the same one that program prints when you start the website.  You also can't use the same instance of the terminal that is currently running the website, so you will need to open another window.(Make sure to change the values for YOUR_NAME, YOUR_PASSWORD, and YOUR_IP)
 ##### WINDOWS
+This has to be done in Windows Powershell. It will <b>NOT</b> work in command prompt
 ```bash
 Invoke-RestMethod -Uri "http://YOUR_IP:3906/newUser" -Method POST -Headers @{ "Content-Type" = "application/json"; "Authorization" = "Bearer ECE3906" } -Body '{"username": "YOUR_NAME", "password": "YOUR_PASSWORD"}'
 ```
