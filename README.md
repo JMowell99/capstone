@@ -31,10 +31,11 @@ In order to run the code you also have to have python installed.  You can find t
 There are two options here, creating a "virtual environment" of python to install to, or just installing the dependencies to your "global" python version; more info on that [here](https://www.youtube.com/watch?v=IAvAlS0CuxI&ab_channel=NeuralNine)., the first 2 minutes or so explain why.  Once you have your virtual environment running, you should see a ```(.venv)``` on your screen every time you run a command.
 
 #### Option 1: Python virtual environment
-This will activate the the virual environment that is already present in this repo. This is also the preffered option when running the code.
+This will create and activate a virual environment; this is also the preffered option when running the code.
 ##### WINDOWS
 ```bash
-.\.venv\bin\activate
+python -m venv .venv
+myenv\Scripts\activate
 pip install -r requirements.txt
 ```
 ##### MAC
