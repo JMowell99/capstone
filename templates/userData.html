@@ -1,40 +1,35 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Display User Data</title>
-    <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
-</head>
-<body>
-    <h1>User Data</h1>
-    <ul id="user-data"></ul>
-
+  <head>
+    <title>Line Graph Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <canvas id="myChart"></canvas>
     <script>
-        const userDataList = document.getElementById('user-data');
-        const userIdInput = document.getElementById('user-id');
+      // Fetch data from the API endpoint
+      fetch('healthData')
+        .then(response => response.json())
+        .then(data => {
+          // Extract the x and y values from the data
+          const xValues = data.map(d => d.x);
+          const yValues = data.map(d => d.y);
 
-        userIdInput.addEventListener('change', () => {
-            const userId = userIdInput.value;
-            if (userId) {
-                // Make API call to endpoint with user ID
-                fetch(`userData?user_id=${userId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Clear previous results
-                        userDataList.innerHTML = '';
-
-                        // Display new results on the web page
-                        for (const [key, value] of Object.entries(data)) {
-                            const listItem = document.createElement('li');
-                            listItem.innerHTML = `${key}: ${value}`;
-                            userDataList.appendChild(listItem);
-                        }
-                    })
-                    .catch(error => console.error(error));
-            } else {
-                // Clear results if user ID is empty
-                userDataList.innerHTML = '';
+          // Create a line chart
+          const ctx = document.getElementById('myChart').getContext('2d');
+          const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: xValues,
+              datasets: [{
+                label: 'Data',
+                data: yValues,
+                borderColor: 'blue',
+                fill: false
+              }]
             }
+          });
         });
     </script>
-</body>
+  </body>
 </html>

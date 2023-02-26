@@ -17,22 +17,12 @@ app.config['SECRET_KEY'] = 'secret-key'
 
 # Define the HealthData model
 class UserData(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), nullable=False)
-    password = db.Column(db.Integer, nullable=False)
-    user_id = db.Column(db.String(50), nullable=True)
+    user_id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=True)
+    password = db.Column(db.Integer, nullable=True)    
     heart_rate = db.Column(db.Integer, nullable=True)
     body_temp = db.Column(db.Float, nullable=True)
     respiration_rate = db.Column(db.Integer, nullable=True)
-    body_temp_history = db.Column(db.String(100), nullable=True)
-
-    def add_temp_reading(self, temp_reading):
-        temp_history = []
-        if self.body_temp_history is not None:
-            temp_history = json.loads(self.body_temp_history)
-        temp_history.append(temp_reading)
-        temp_history = temp_history[-3:]
-        self.body_temp_history = json.dumps(temp_history)
     
 ACCESS_TOKEN = "ECE3906"
 
@@ -88,22 +78,53 @@ def about():
 def health_data():
     if request.method == 'GET':
         user_id = request.args.get('user_id')
-        health_data = UserData.query.filter_by(user_id=user_id).first()
-        if health_data:
-            return jsonify({'user_id': user_id, 'heart_rate': health_data.heart_rate, 'body_temp': health_data.body_temp, 'body_temp_history': json.loads(health_data.body_temp_history), 'respiration_rate': health_data.respiration_rate}), 200
+        username = request.args.get('username')
+        password = request.args.get('password')
+        if user_id:
+            health_data = UserData.query.filter_by(user_id=user_id).first()
+            if health_data:
+                return jsonify({'user_id': user_id, 'heart_rate': health_data.heart_rate, 'body_temp': health_data.body_temp, 'respiration_rate': health_data.respiration_rate}), 200
+            else:
+                return jsonify({'message': 'Health data not found for the specified user.'}), 404
+        elif username and password:
+            user = UserData.query.filter_by(username=username, password=password).first()
+            if user:
+                user_id = user.user_id
+                health_data = UserData.query.filter_by(user_id=user_id).first()
+                if health_data:
+                    return jsonify({'user_id': user_id, 'heart_rate': health_data.heart_rate, 'body_temp': health_data.body_temp, 'respiration_rate': health_data.respiration_rate}), 200
+                else:
+                    return jsonify({'message': 'Health data not found for the specified user.'}), 404
+            else:
+                return jsonify({'message': 'Invalid username or password.'}), 401
         else:
-            return jsonify({'message': 'Health data not found for the specified user.'}), 404
+            return jsonify({'message': 'Missing user ID or username/password.'}), 400
     elif request.method == 'POST':
         data = request.get_json()
-        user_id = data.get('user_id')
-        heart_rate = data.get('heart_rate')
-        body_temp = data.get('body_temp')
-        respiration_rate = data.get('respiration_rate')
-        new_health_data = UserData(user_id=user_id, heart_rate=heart_rate, body_temp=body_temp, respiration_rate=respiration_rate)
-        new_health_data.add_temp_reading(body_temp)
-        db.session.add(new_health_data)
-        db.session.commit()
-        return jsonify({'message': 'Health data added successfully.'}), 201
+        user_id = request.args.get('user_id')
+        username = data.get('username')
+        password = data.get('password')
+        if user_id:
+            heart_rate = data.get('heart_rate')
+            body_temp = data.get('body_temp')
+            respiration_rate = data.get('respiration_rate')
+            health_data = UserData.query.filter_by(user_id=user_id).first()
+            if health_data:
+                health_data.heart_rate = heart_rate
+                health_data.body_temp = body_temp
+                health_data.respiration_rate = respiration_rate
+            else:
+                health_data = UserData(user_id=user_id, heart_rate=heart_rate, body_temp=body_temp, respiration_rate=respiration_rate)
+                db.session.add(health_data)
+            db.session.commit()
+            return jsonify({'message': 'Health data added/updated successfully.'}), 201
+        elif username and password:
+            user = UserData(username=username, password=password)
+            db.session.add(user)
+            db.session.commit()
+            return jsonify({'message': 'New user credentials added successfully.'}), 201
+        else:
+            return jsonify({'message': 'Missing user ID or username/password.'}), 400
 
 # This isn't working yet. I want it to only display the data for the currently signed in user
 """
