@@ -3,8 +3,217 @@
     <head>
         <meta charset="UTF-8">
         <title>About Us</title>
+        <link rel="stylesheet" type="text/css" href="../static/css/styles.css">
     </head>
+    <style>
+        h1 {
+            color: #ce0f3d;
+        }
+
+        .ignore-styling {
+            color: black !important;
+        }
+
+        p {
+            color: black;
+        }
+    </style>
     <body>
-        <p>We are team 02 for ECE 3906!</p>
+        <div class="menu-icon">
+            <div class="menu-line"></div>
+            <div class="menu-line"></div>
+            <div class="menu-line"></div>
+          
+          <div class="menu">
+            <a href="/about">About Us</a>
+            <a href="/">Home</a>
+            <a href="/userData">See Your Data</a>
+          </div>
+        </div>
+       
+        <div class="about-section">
+            <h1 class="ignore-styling">About Us</h1>
+            <div class="links">
+                <a href="#ourTeam">Our Team</a>
+                <a href="#problemStatement">Problem Statement</a>
+                <a href="#targetUsers">Target Users</a>
+                <a href="#stakeholders">Stakeholders</a>
+              </div>
+        </div>
+            <div id="ourTeam"><br><h1 style="text-align:center">Our Team</h1><br>
+          <div class="row">
+            <div class="column">
+              <div class="card">
+                <img src="../static/images/blank.jpg" alt="Josh" style="width:100%">
+                <div class="container">
+                  <h2>Josh Gallup</h2>
+                  <p class="title">Team Leader</p>
+                  <p class="ignore-styling">Tell me something about yourself</p>
+                </div>
+              </div>
+            </div>
+          
+            <div class="column">
+              <div class="card">
+                <img src="../static/images/blank.jpg" alt="Ronny" style="width:100%">
+                <div class="container">
+                  <h2>Ronny Brennan</h2>
+                  <p class="title">Embeded/Digital Hardware Lead</p>
+                  <p class="ignore-styling">Tell me something about yourself</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="column">
+              <div class="card">
+                <img src="../static/images/Jesse.jpg" alt="Jesse" style="width:100%">
+                <div class="container">
+                  <h2>Jesse Mowell</h2>
+                  <p class="title">Software Expert</p>
+                  <p class="ignore-styling">Has been on 2 TV shows!</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="column">
+                <div class="card">
+                  <img src="../static/images/blank.jpg" alt="Steve" style="width:100%">
+                  <div class="container">
+                    <h2>Steve Zhao</h2>
+                    <p class="title">CAD/Modeling Lead</p>
+                    <p class="ignore-styling">Tell me something about yourself</p>
+                  </div>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card">
+                  <img src="../static/images/blank.jpg" alt="Steve" style="width:100%">
+                  <div class="container">
+                    <h2>Steve Zhao</h2>
+                    <p class="title">CAD/Modeling Lead</p>
+                    <p class="ignore-styling">Tell me something about yourself</p>
+                  </div>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card">
+                  <img src="../static/images/Berger.jpg" alt="Berger" style="width:100%">
+                  <div class="container">
+                    <h2>Dr. Berger</h2>
+                    <p class="title">Capstone Professor</p>
+                    <p class="ignore-styling">Tell me something about yourself</p>
+                  </div>
+                </div>
+            </div>
+        </div></div>
+
+        <div class="center" id="problemStatement">
+        <br><h1>Problem Statement</h1><br>
+                <p class="double-spaced center" style="width: 90%;">
+                    Design, build, and test a device to track vitals to ensure a person is keeping healthy and alerting them if not. We need to be able to 
+                    have constant contact with the person's skin, high accuracy, long battery life for everyday use, and enough area to integrate the 
+                    system on. The device will be composed of discrete components and chips that are integrated to form a whole system which will 
+                    be powered by a FlexEnergy battery and energy harvester in a hybrid fashion. 
+                </p>
+        </div>
+        <div id="targetUsers">
+            <h1 class="center">Target Users</h1>
+            <div class="columns-container">
+            <div class="text-column center">
+                <h3>Hospital Patients Needs</h3>
+                        <ul style="list-style: none;">
+                            <li class="li-left">
+                                Heart Rate
+                            </li>
+                            <li class="li-left">
+                                Electrolyte Tracking
+                            </li>
+                            <li class="li-left">
+                                V02 Max
+                            </li>
+                            <li class="li-left">
+                                Heart Rate Curve
+                            </li>
+                            <li class="li-left">
+                                Calories Burned
+                            </li>
+                        </ol>
+            </div>
+            <div class="text-column center">
+                <h3>Fitness Enthuiests Needs</h3>
+                        <ol>
+                            <li class="li-left">
+                                Heart Rate
+                            </li>
+                            <li class="li-left">
+                                Oxygen Levels
+                            </li>
+                            <li class="li-left">
+                                Body Temp
+                            </li>
+                            <li class="li-left">
+                                Respiration Rate
+                            </li>
+                            <li class="li-left">
+                                Blood Pressure
+                            </li>
+                        </ol>
+            </div>
+            </div>
+        </div>
+        
+        <div id="stakeholders"><h1 class="center">Stakeholders</h1>
+        <div class="columns-container">
+            <div class="text-row">
+              <div class="text-column center">
+                <h3>Dr. Sengupta</h3>
+                <p>Investing time, 
+                    money, and resources in aiding the 
+                    development and fabricating of the wearable 
+                    device. Additionally, it could serve as 
+                    inspiration for a product or product for his 
+                    company </p>
+              </div>
+              <div class="text-column center">
+                <h3>Dr. Berger</h3>
+                <p>Investing time and resources 
+                    mentoring the team, as well as keeping a stable 
+                    relationship with Dr. Sengupta.</p>
+              </div>
+              <div class="text-column center">
+                <h3>Medical Professionals</h3>
+                <p>They will be the one 
+                    administering the device to patients and relying on the device to 
+                    accurately track the condition of a patient.</p>
+              </div>
+            </div>
+        </div>
+        <div class="columns-container">
+            <div class="text-row">
+              <div class="text-column center">
+                <h3>Fitness Enthuiests</h3>
+                <p>Will be buying the 
+                    product for recreational use to monitor and help track or improve 
+                    health status.</p>
+              </div>
+              <div class="text-column center">
+                <h3>Patients</h3>
+                <p>Their well-being and quality of 
+                    treatment is dependent on device being accurate in 
+                    measurements and constantly transmitting health data.</p>
+              </div>
+              <div class="text-column center">
+                <h3>Team 02</h3>
+                <p>We are designing, building, and 
+                    testing the technology for our capstone project to 
+                    graduate with a B.S. degree.</p>
+              </div>
+            </div>
+        </div>
+        </div>
+    
+        </div>
     </body>
 </html>
