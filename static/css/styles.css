@@ -22,7 +22,7 @@
   background-color: #b0b7bc;
   overflow: hidden;
   transition: width 0.3s ease-in-out;
-  z-index: 9998;
+  z-index: 9999;
   font-weight: bold;
 }
 
@@ -95,6 +95,11 @@ html {
   text-align: center;
   background-color: #ce0f3d;
   color: #000000;
+  position: sticky;
+  height: 200px;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 
 .container {
@@ -208,4 +213,13 @@ html {
 
 .banner::after {
   bottom: 0;
+}
+
+body{
+  padding-bottom: 200px;
+}
+
+.offset{
+  padding-top: 200px;
+  margin-top: -200px;
 }
