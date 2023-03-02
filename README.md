@@ -35,7 +35,7 @@ This will create and activate a virual environment; this is also the preffered o
 ##### WINDOWS
 ```bash
 python -m venv .venv
-myenv\Scripts\activate
+.venv\Scripts\activate
 pip install -r requirements.txt
 ```
 ##### MAC
