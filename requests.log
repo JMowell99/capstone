@@ -1,0 +1,14 @@
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 825-612-908
+INFO:main:192.168.0.196 GET / 200 OK 2385
+INFO:werkzeug:192.168.0.196 - - [03/Mar/2023 00:40:31] "GET / HTTP/1.1" 200 -
+INFO:main:192.168.0.196 GET /static/css/styles.css 304 NOT MODIFIED 3977
+INFO:werkzeug:192.168.0.196 - - [03/Mar/2023 00:40:31] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+INFO:main:192.168.0.196 GET / 200 OK 2385
+INFO:werkzeug:192.168.0.196 - - [03/Mar/2023 00:44:27] "GET / HTTP/1.1" 200 -
+INFO:main:192.168.0.196 GET /static/css/styles.css 304 NOT MODIFIED 3977
+INFO:werkzeug:192.168.0.196 - - [03/Mar/2023 00:44:27] "[36mGET /static/css/styles.css HTTP/1.1[0m" 304 -
+INFO:werkzeug: * Detected change in 'c:\\Users\\djess\\OneDrive\\Desktop\\github\\capstone\\main.py', reloading
+WARNING:werkzeug: * Debugger is active!
+INFO:werkzeug: * Debugger PIN: 825-612-908
+INFO:werkzeug: * Detected change in 'c:\\Users\\djess\\OneDrive\\Desktop\\github\\capstone\\main.py', reloading

@@ -1,10 +1,32 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+
 import platform
 import subprocess
 import pickle
+from statistics import mean
+import json
+import requests
+from functools import wraps
+import logging
+from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
+app.logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler()
+handler.setLevel(logging.DEBUG)
+app.logger.addHandler(handler)
+
+@app.after_request
+def after_request(response):
+    app.logger.info('%s %s %s %s %s', request.remote_addr, request.method, request.path, response.status, response.content_length)
+    return response
+
+@app.route("/logResponse", methods=["POST"])
+def log_response():
+    data = request.json
+    app.logger.info("Response data: %s", data)
+    return "", 204
 
 # Configuration settings for the databases
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///user_data.db'
@@ -39,12 +61,21 @@ ACCESS_TOKEN = "ECE3906"
 
 # Decorator to check if the request has a valid access token
 def require_token(f):
-    def wrapper(*args, **kwargs):
-        if request.headers.get('Authorization') != f"Bearer {ACCESS_TOKEN}":
-            return jsonify({'message': 'Access denied.'}), 403
-        return f(*args, **kwargs)
-    wrapper.__name__ = f.__name__
-    return wrapper
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if request.remote_addr == f'{ip}':
+            # Allow requests from localhost to bypass token authentication
+            return f(*args, **kwargs)
+        else:
+            # Check if the request includes a valid token
+            token = request.headers.get('Authorization')
+            if token is None:
+                return {'message': 'Missing authorization token'}, 401
+            elif token != 'Bearer MY_SECRET_TOKEN':
+                return {'message': 'Invalid authorization token'}, 401
+            else:
+                return f(*args, **kwargs)
+    return decorated_function
 
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
@@ -139,6 +170,39 @@ def health_data():
             return jsonify({'message': 'New user credentials added successfully.'}), 201
         else:
             return jsonify({'message': 'Missing user ID or username/password.'}), 400
+
+@app.route('/healthDataStats', methods=['GET'])
+@require_token
+def health_data_stats():
+    user_id = request.args.get('user_id')
+    stat = request.args.get('stat')
+    value = request.args.get('value')
+    url = f'http://{ip}:3906/healthData'
+
+    # Set request parameters
+    params = {'user_id': user_id}
+
+    # Set request headers with token
+    headers = {'Authorization': 'Bearer ECE3906'}
+
+    # Send GET request
+    response = requests.get(url, params=params, headers=headers)
+
+    data = response.json()
+    heartRate = data['heart_rate']
+    bodyTemp = data['body_temp']
+    respirationRate = data['respiration_rate']
+    lists = {"heartRate": heartRate, "bodyTemp": bodyTemp, "respirationRate": respirationRate}
+
+    if value == "min":
+        return str(min(lists[stat]))
+    elif value == "max":
+        return str(max(lists[stat]))
+    elif value == "mean":
+        return str(mean(lists[stat]))
+    else:
+        return("Invalid paramaters")
+
 
 @app.route('/userData')
 @login_required

@@ -17,26 +17,88 @@
 		<a href="/userData">See Your Data</a>
 	  </div>
 	</div>
-	  <script src="../static/scripts/scripts.js"></script>
-	<div class="center"><h1>Welcome!</h1>
-	<p>The time below is being collected from an API :)</p>
-	<p id="time"></p>
-    <button onclick="window.location.href='about'">About Us</button>
-	</div>
-	<script>
-		$(document).ready(function() {
-			$.ajax({
-				url: 'https://worldtimeapi.org/api/timezone/Etc/UTC',
-				method: 'GET',
-				success: function(response) {
-					var time = new Date(response.datetime);
-					$('#time').text('The current time is: ' + time.toLocaleString());
-				},
-				error: function(error) {
-					console.log(error);
+	<div class="center"><h1>Your Data Dashboard</h1>
+		<table>
+			<tr>
+			  <td>Column 1</td>
+			  <td>Column 2</td>
+			  <td>Column 3</td>
+			  <td>Column 4</td>
+			  <td>Column 5</td>
+			</tr>
+			<tr>
+			  <td>Row 2, Column 1</td>
+			  <td>Row 2, Column 2</td>
+			  <td>Row 2, Column 3</td>
+			  <td>Row 2, Column 4</td>
+			  <td>Row 2, Column 5</td>
+			</tr>
+			<tr>
+			  <td>Row 3, Column 1</td>
+			  <td>Row 3, Column 2</td>
+			  <td>Row 3, Column 3</td>
+			  <td>Row 3, Column 4</td>
+			  <td>Row 3, Column 5</td>
+			</tr>
+		  </table>
+		</div>
+		<script>
+			// get the table element by its ID
+			const table = document.getElementById("table");
+
+			// loop through every row in the table
+			for (let i = 0; i < table.rows.length; i++) {
+			const row = table.rows[i];
+
+			// add a class to the row depending on its index
+			if (i === 1) {
+				row.classList.add("bodyTemp");
+			} else if (i === 2) {
+				row.classList.add("respirationRate");
+			} else if (i === 3) {
+				row.classList.add("heartRate");
+			}
+
+			// loop through every cell in the row starting from the 2nd column
+			for (let j = 1; j < row.cells.length; j++) {
+				const cell = row.cells[j];
+
+				// add a class to the cell depending on its index
+				if (j === 1) {
+				cell.classList.add("min");
+				} else if (j === 2) {
+				cell.classList.add("max");
+				} else if (j === 3) {
+				cell.classList.add("mean");
 				}
-			});
-		});
-	</script>
-</body>
+
+				// only call API endpoint if the cell has a class
+				if (cell.className) {
+					fetch("/healthDataStats?stat=" + row.className + "&value=" + cell.className)
+						.then(response => {
+							if (response.ok) {
+								return response.json();
+							} else {
+								throw new Error("Network response was not ok.");
+							}
+						})
+						.then(data => {
+                        console.log(data);
+                        fetch("/logResponse", {
+                            method: "POST",
+                            body: JSON.stringify(data),
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        })
+                        .catch(error => console.error("Error logging response:", error));
+                    })
+                    .catch(error => {
+                        console.error("Error fetching data:", error);
+                    });
+				}
+			}
+			}
+		</script>
+	</body>
 </html>
