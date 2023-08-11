@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 import platform
 import subprocess
 import pickle
+import os
 
 app = Flask(__name__)
 
@@ -56,6 +57,7 @@ def login():
         user = UserData.query.filter_by(username=username).first()
         if user and user.password == password:
             session['logged_in'] = True
+            session['user_id'] = user.user_id
             return redirect(url_for('home'))
         else:
             return render_template('login.html', error='Invalid username or password')
@@ -143,7 +145,9 @@ def health_data():
 @app.route('/userData')
 @login_required
 def userData():
-    return render_template('userData.html')
+    user_id = session.get('user_id')
+    print("The user_id value of this user is " + str(user_id))
+    return render_template('userData.html', session=session)
 
 # This isn't working yet. I want it to only display the data for the currently signed in user
 """
