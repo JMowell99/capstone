@@ -56,6 +56,7 @@ def login():
         user = UserData.query.filter_by(username=username).first()
         if user and user.password == password:
             session['logged_in'] = True
+            session['user_id'] = user.user_id
             return redirect(url_for('home'))
         else:
             return render_template('login.html', error='Invalid username or password')
@@ -143,46 +144,9 @@ def health_data():
 @app.route('/userData')
 @login_required
 def userData():
-    return render_template('userData.html')
+    user_id = session.get('user_id')
+    return render_template('userData.html', session=session)
 
-# This isn't working yet. I want it to only display the data for the currently signed in user
-"""
-@app.route('/userData')
-def user_data():
-    if 'logged_in' in session and session['logged_in']:
-        # Get user ID associated with username and password used to log in
-        username = request.authorization.username
-        password = request.authorization.password
-        user = UserData.query.filter_by(username=username).first()
-        if user and user.password == password:
-            user_id = user.id
-
-            # Get user data using user ID
-            data = get_user_data(user_id)
-
-            # Return user data as JSON
-            return jsonify(data)
-        else:
-            # Return error if username and password do not match
-            return jsonify({'error': 'Invalid username or password'})
-    else:
-        # Return error if user is not logged in
-        return jsonify({'error': 'Unauthorized access'})
-
-def get_user_data(user_id):
-    # Retrieve user data from database based on user ID
-    user = UserData.query.filter_by(id=user_id).first()
-    if user:
-        data = {
-            'user_id': user.id,
-            'username': user.username,
-            'email': user.email
-            # Add more key/value pairs as needed
-        }
-        return data
-    else:
-        return None
-"""
 @app.route('/newUser', methods=['POST'])
 @require_token
 def new_user():

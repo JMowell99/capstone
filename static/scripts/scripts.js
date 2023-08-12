@@ -1,4 +1,6 @@
-fetch('/healthData?user_id=1', {
+console.log("user_id:", user_id);
+
+fetch(`/healthData?user_id=${user_id}`, {
   method: 'GET',
   headers: {
     'Authorization': 'Bearer ECE3906'
