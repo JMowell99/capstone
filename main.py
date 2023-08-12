@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 import platform
 import subprocess
 import pickle
-import os
 
 app = Flask(__name__)
 
@@ -146,47 +145,8 @@ def health_data():
 @login_required
 def userData():
     user_id = session.get('user_id')
-    print("The user_id value of this user is " + str(user_id))
     return render_template('userData.html', session=session)
 
-# This isn't working yet. I want it to only display the data for the currently signed in user
-"""
-@app.route('/userData')
-def user_data():
-    if 'logged_in' in session and session['logged_in']:
-        # Get user ID associated with username and password used to log in
-        username = request.authorization.username
-        password = request.authorization.password
-        user = UserData.query.filter_by(username=username).first()
-        if user and user.password == password:
-            user_id = user.id
-
-            # Get user data using user ID
-            data = get_user_data(user_id)
-
-            # Return user data as JSON
-            return jsonify(data)
-        else:
-            # Return error if username and password do not match
-            return jsonify({'error': 'Invalid username or password'})
-    else:
-        # Return error if user is not logged in
-        return jsonify({'error': 'Unauthorized access'})
-
-def get_user_data(user_id):
-    # Retrieve user data from database based on user ID
-    user = UserData.query.filter_by(id=user_id).first()
-    if user:
-        data = {
-            'user_id': user.id,
-            'username': user.username,
-            'email': user.email
-            # Add more key/value pairs as needed
-        }
-        return data
-    else:
-        return None
-"""
 @app.route('/newUser', methods=['POST'])
 @require_token
 def new_user():
