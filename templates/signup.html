@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sign Up</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+</head>
+<script>
+	
+	async function handleSignup(e) {
+		e.preventDefault();
+		console.log(e.target.username.value);
+		await fetch('/newUser', {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: "ECE3906"
+			},
+			body: JSON.stringify({
+				username: e.target.username.value,
+				password: e.target.password.value
+			})
+		})
+	}
+	const signUpForm = document.getElementById('signUpForm');
+
+	addEventListener("submit", handleSignup)
+</script>
+<body>
+	<div class="center">
+	<div class="login-container">
+		<h1>Sign Up</h1>
+		<!-- <form action="/newUser" method="POST"> -->
+		<form id="signUpForm">
+			<label for="username">Username</label>
+			<input type="text" name="username" id="username" required>
+			
+			<label for="password">Password</label>
+			<input type="password" name="password" id="password" required>
+
+			<button type="submit">Sign Up</button>
+		</form>
+	</div>
+	</div>
+</body>
+</html>

@@ -62,6 +62,12 @@ def login():
             return render_template('login.html', error='Invalid username or password')
     else:
         return render_template('login.html')
+    
+# signup route
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    return render_template('signup.html')
+
 
 
 
