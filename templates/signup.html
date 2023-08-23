@@ -6,27 +6,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="../static/css/styles.css">
 </head>
-<script>
-	
-	async function handleSignup(e) {
-		e.preventDefault();
-		console.log(e.target.username.value);
-		await fetch('/newUser', {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: "ECE3906"
-			},
-			body: JSON.stringify({
-				username: e.target.username.value,
-				password: e.target.password.value
-			})
-		})
-	}
-	const signUpForm = document.getElementById('signUpForm');
-
-	addEventListener("submit", handleSignup)
-</script>
 <body>
 	<div class="center">
 	<div class="login-container">
@@ -39,9 +18,45 @@
 			<label for="password">Password</label>
 			<input type="password" name="password" id="password" required>
 
-			<button type="submit">Sign Up</button>
+			<button type="button" onclick="signUp()">Sign Up</button>
 		</form>
 	</div>
 	</div>
+	<script>
+		function signUp() {
+			// Get the values of username and password from the form
+			const username = document.getElementById("username").value;
+			const password = document.getElementById("password").value;
+			
+			const apiUrl = '/newUser';
+			const authToken = 'ECE3906';
+	
+			const data = {
+				username: username,
+				password: password
+			};
+	
+			fetch(apiUrl, {
+				method: 'POST',
+				headers: {
+					'Authorization': `Bearer ${authToken}`,
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(data)
+			})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				return response.json();
+			})
+			.then(data => {
+				console.log(data);
+			})
+			.catch(error => {
+				console.error('An error occured:', error);
+			});
+		}
+	</script>
 </body>
 </html>
