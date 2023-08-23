@@ -159,7 +159,25 @@ def new_user():
         db.session.commit()
         return jsonify({'message': 'New user credentials added successfully.'}), 201
     else:
-        return jsonify({'message': 'Not a supported method'}), 400
+        return jsonify({'message': 'Not a supported method'}), 403
+
+@app.route('/deleteUser', methods=['DELETE'])
+@require_token
+def del_user():
+    if request.method == 'DELETE':
+        userID = request.args.get('user_id')
+        check_if_user = UserData.query.filter_by(user_id=userID).first()
+        if check_if_user is not None:
+            try:
+                db.session.delete(check_if_user)
+                db.session.commit()
+                return f"User {userID} deleted successfully."
+            except Exception as e:
+                return f"Error deleting user: {e}"
+        else:
+            return f"No user_id found in the database for {userID}"
+    else:
+        return jsonify({'message': 'Not a supported method'}), 403
 
 os = platform.system()
 if os == "Darwin":
