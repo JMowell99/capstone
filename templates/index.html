@@ -6,19 +6,8 @@
 	<link rel="stylesheet" type="text/css" href="../static/css/styles.css">
 </head>
 <body>
-	<div class="menu-icon">
-		<div class="menu-line"></div>
-		<div class="menu-line"></div>
-		<div class="menu-line"></div>
-	  
-	  <div class="menu">
-		<a href="/about">About Us</a>
-		<a href="/">Home</a>
-		<a href="/userData">See Your Data</a>
-		<a href="/logout">Log Out</a>
-	  </div>
-	</div>
-	  <script src="../static/scripts/scripts.js"></script>
+	{% include '/fragments/menu.html' %}
+	<script src="../static/scripts/scripts.js"></script>
 	<div class="center"><h1>Welcome!</h1>
 	<p>The time below is being collected from an API :)</p>
 	<p id="time"></p>
