@@ -63,7 +63,10 @@ def login():
     else:
         return render_template('login.html')
 
-
+@app.route('/logout', methods=['GET'])
+def logout():
+    session['logged_in'] = False
+    return redirect(url_for('login'))
 
 # Decorator to check if the user is logged in
 def login_required(f):
