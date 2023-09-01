@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 import platform
 import subprocess
@@ -58,8 +58,12 @@ def login():
             session['logged_in'] = True
             session['user_id'] = user.user_id
             return redirect(url_for('home'))
-        else:
-            return render_template('login.html', error='Invalid username or password')
+        elif user == None:
+            flash('Username not foud in database, please try again', 'error')
+            return redirect(url_for('login'))
+        elif password != user.password:
+            flash('Incorrect password, please try again', 'error')
+            return redirect(url_for('login'))
     else:
         return render_template('login.html')
 

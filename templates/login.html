@@ -5,6 +5,13 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+	{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <script>
+            alert("{{ messages[0][1] }}");
+        </script>
+    {% endif %}
+{% endwith %}
 </head>
 <body>
 	<div class="center">
