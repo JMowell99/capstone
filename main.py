@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
 import platform
 import subprocess
 import pickle
@@ -161,6 +162,27 @@ def new_user():
     else:
         return jsonify({'message': 'Not a supported method'}), 403
 
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT']=465
+app.config['MAIL_USERNAME']='tteamo2222@gmail.com'
+app.config['MAIL_PASSWORD'] = 'mymhykauoylerlqq'
+app.config['MAIL_USE_TLS']= False
+app.config['MAIL_USE_SSL']=True
+
+
+mail = Mail(app)
+@app.route("/sendmail")
+def index():
+
+    msg = Message("Hello",
+                  sender="tteamo2222@gmail.com",
+                  recipients=["toty.cscc@gmail.com"])
+    msg.body = "Hello Flask message sent from Flask-Mail"
+    mail.send(msg)
+    return "Receive my email bitchesssssss"
+
+
 @app.route('/deleteUser', methods=['DELETE'])
 @require_token
 def del_user():
@@ -198,3 +220,10 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(host=ip, port='3906', debug=True)
+
+
+
+
+
+    
+
