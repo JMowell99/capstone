@@ -1,101 +1,111 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Team 02 Home Page</title>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="../static/css/styles.css">
-	<style>
-		table {
-			border-collapse: collapse;
-			width: 70%;
-		}
+	<head>
+		<title>Team 02 Home Page</title>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script> var user_id = "{{ session['user_id'] }}"; </script>
+		<script src="/static/scripts/index.js"></script>
+		<link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+		<style>
+			table {
+				border-collapse: collapse;
+				width: 70%;
+			}
 
-		table, th, td {
-			border: 1px solid black;
-		}
+			table, th, td {
+				border: 1px solid black;
+			}
 
-		th {
-			text-align: center;
-			background-color: lightgray;
-			font-size: 40px;
-		}
+			th {
+				text-align: center;
+				background-color: lightgray;
+				font-size: 40px;
+			}
 
-		th, td {
-			padding: 10px;
-		}
-	</style>
-</head>
-<body>
-	<div class="menu-icon">
-		<div class="menu-line"></div>
-		<div class="menu-line"></div>
-		<div class="menu-line"></div>
-	  
-	  <div class="menu">
-		<a href="/about">About Us</a>
-		<a href="/">Home</a>
-		<a href="/userData">See Your Data</a>
-	  </div>
-	</div>
-	  <script src="../static/scripts/scripts.js"></script>
-	<div class="center"><h1>Welcome!</h1>
-		<table border="1">
-			<tr>
-				<th colspan="5">Your Data Dashboard</th>
-			</tr>
-			<tr style="font-size: large; font-weight: bold">
-				<td>STAT</td>
-				<td>LOW</td>
-				<td>HIGH</td>
-				<td>AVERAGE</td>
-				<td>HEALTHY RANGE</td>
-			</tr>
-			<tr>
-				<td>Heart Rate</td>
-				<td id="hr_low">Row 2, Cell 2</td>
-				<td id="hr_high">Row 2, Cell 3</td>
-				<td id="hr_avg">Row 2, Cell 4</td>
-				<td>60 - 100</td>
-			</tr>
-			<tr>
-				<td>Body Temp</td>
-				<td id="bt_low">Row 3, Cell 2</td>
-				<td id="bt_high">Row 3, Cell 3</td>
-				<td id="bt_avg">Row 3, Cell 4</td>
-				<td>97 - 99</td>
-			</tr>
-			<tr>
-				<td>Respiration Rate</td>
-				<td id="rr_low">Row 4, Cell 2</td>
-				<td id="rr_high">Row 4, Cell 3</td>
-				<td id="rr_avg">Row 4, Cell 4</td>
-				<td>12 - 15</td>
-			</tr>
-			<tr>
-				<td>Step Count</td>
-				<td id="sc_low">Row 5, Cell 2</td>
-				<td id="sc_high">Row 5, Cell 3</td>
-				<td id="sc_avg">Row 5, Cell 4</td>
-				<td>10,000</td>
-			</tr>
-		</table>
+			th, td {
+				padding: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="menu-icon">
+			<div class="menu-line"></div>
+			<div class="menu-line"></div>
+			<div class="menu-line"></div>
 		
-    <button onclick="window.location.href='about'">About Us</button>
-	</div>
-	<script>
-		$(document).ready(function() {
-			$.ajax({
-				url: 'https://worldtimeapi.org/api/timezone/Etc/UTC',
-				method: 'GET',
-				success: function(response) {
-					var time = new Date(response.datetime);
-					$('#time').text('The current time is: ' + time.toLocaleString());
-				},
-				error: function(error) {
-					console.log(error);
+		<div class="menu">
+			<a href="/about">About Us</a>
+			<a href="/">Home</a>
+			<a href="/userData">See Your Data</a>
+		</div>
+		</div>
+		<script src="../static/scripts/index.js"></script>
+		<div class="center"><h1>Welcome!</h1>
+			<table border="1">
+				<tr>
+					<th colspan="5">Your Data Dashboard</th>
+				</tr>
+				<tr style="font-size: large; font-weight: bold">
+					<td>STAT</td>
+					<td>LOW</td>
+					<td>HIGH</td>
+					<td>AVERAGE</td>
+					<td>HEALTHY RANGE</td>
+				</tr>
+				<tr>
+					<td>Heart Rate</td>
+					<td id="hr_low"></td>
+					<td id="hr_high"></td>
+					<td id="hr_avg"></td>
+					<td>60 - 100</td>
+				</tr>
+				<tr>
+					<td>Body Temp</td>
+					<td id="bt_low"></td>
+					<td id="bt_high"></td>
+					<td id="bt_avg"></td>
+					<td>97 - 99</td>
+				</tr>
+				<tr>
+					<td>Respiration Rate</td>
+					<td id="rr_low"></td>
+					<td id="rr_high"></td>
+					<td id="rr_avg"></td>
+					<td>12 - 15</td>
+				</tr>
+				<tr>
+					<td>Step Count</td>
+					<td id="sc_low"></td>
+					<td id="sc_high"></td>
+					<td id="sc_avg"></td>
+					<td>> 8,000</td>
+				</tr>
+			</table>
+			
+			<button onclick="window.location.href='about'">About Us</button>
+			<script>
+				// Function to change background color based on value
+				function changeBackgroundColor(elementId, value, lowerUnhealthyLimit, lowerDangerousLimit, higherUnhealyLimit, higherDangerousLimit) {
+					const element = document.getElementById(elementId);
+					const numericValue = parseFloat(value);
+
+					if (!isNaN(numericValue)) {
+						if (numericValue < lowerUnhealthyLimit || numericValue > higherUnhealyLimit) {
+							element.style.backgroundColor = 'yellow'; // Red for dangerous
+						} else if (numericValue < lowerDangerousLimit || numericValue > higherDangerousLimit) {
+							element.style.backgroundColor = 'red'; // Yellow for unhealthy
+						} else {
+							element.style.backgroundColor = 'green'; // Default color
+						}
+					}
 				}
-			});
-		});
-	</script>
-</body>
+			
+				// Example usage
+				changeBackgroundColor('hr_low', '50', 60, 40); // Change the limits as needed
+				changeBackgroundColor('bt_low', '96', 97, 95); // Change the limits as needed
+				changeBackgroundColor('rr_low', '10', 12, 8); // Change the limits as needed
+				changeBackgroundColor('sc_low', '7000', 8000, 6000); // Change the limits as needed
+			</script>
+		</div>
+	</body>
 </html>
