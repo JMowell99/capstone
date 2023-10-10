@@ -180,7 +180,7 @@ def index():
                   recipients=["toty.cscc@gmail.com"])
     msg.body = "Hello Flask message sent from Flask-Mail"
     mail.send(msg)
-    return "Receive my email bitchesssssss"
+    return "Receive my email"
 
 
 @app.route('/deleteUser', methods=['DELETE'])

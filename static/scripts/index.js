@@ -50,6 +50,40 @@ fetch(endpointUrl, getRequestOptions)
     document.getElementById('rr_low').textContent = `${respirationRateLow}`;
     document.getElementById('rr_high').textContent = `${respirationRateHigh}`;
     document.getElementById('rr_avg').textContent = `${respirationRateAvg.toFixed(2)}`;
+
+    // Function to change background color based on value
+    function changeBackgroundColor(elementId, lowerUnhealthyLimit, lowerDangerousLimit, higherUnhealthyLimit, higherDangerousLimit) {
+      const element = document.getElementById(elementId);
+      const value = parseFloat(element.textContent);
+
+      if (!isNaN(value)) {
+        if (value < lowerDangerousLimit || value > higherDangerousLimit) {
+          element.style.backgroundColor = '#FF0000'; // Red for dangerous
+        }
+        else if (value < lowerUnhealthyLimit || value > higherUnhealthyLimit) {
+          element.style.backgroundColor = 'yellow'; // Yellow for unhealthy else
+        }
+        else {
+          element.style.backgroundColor = '#90EE90'; // Green for healthy
+        }
+      }
+    }
+
+    // Setting background color for heart rate
+    changeBackgroundColor("hr_low", 60, 40, 180, 200);
+    changeBackgroundColor("hr_high", 60, 40, 180, 200);
+    changeBackgroundColor("hr_avg", 60, 40, 180, 200);
+
+    // Settting background color for body temp
+    changeBackgroundColor("bt_low", 97, 95, 99, 103);
+    changeBackgroundColor("bt_high", 97, 95, 99, 103);
+    changeBackgroundColor("bt_avg", 97, 95, 99, 103);
+
+    // Setting background color for respiration rate
+    changeBackgroundColor("rr_low", 12, 10, 15, 16);
+    changeBackgroundColor("rr_high", 12, 10, 15, 16);
+    changeBackgroundColor("rr_avg", 12, 10, 15, 16);
+
   })
   .catch((error) => {
     // Handle errors here

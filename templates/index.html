@@ -81,31 +81,6 @@
 					<td>> 8,000</td>
 				</tr>
 			</table>
-			
-			<button onclick="window.location.href='about'">About Us</button>
-			<script>
-				// Function to change background color based on value
-				function changeBackgroundColor(elementId, value, lowerUnhealthyLimit, lowerDangerousLimit, higherUnhealyLimit, higherDangerousLimit) {
-					const element = document.getElementById(elementId);
-					const numericValue = parseFloat(value);
-
-					if (!isNaN(numericValue)) {
-						if (numericValue < lowerUnhealthyLimit || numericValue > higherUnhealyLimit) {
-							element.style.backgroundColor = 'yellow'; // Red for dangerous
-						} else if (numericValue < lowerDangerousLimit || numericValue > higherDangerousLimit) {
-							element.style.backgroundColor = 'red'; // Yellow for unhealthy
-						} else {
-							element.style.backgroundColor = 'green'; // Default color
-						}
-					}
-				}
-			
-				// Example usage
-				changeBackgroundColor('hr_low', '50', 60, 40); // Change the limits as needed
-				changeBackgroundColor('bt_low', '96', 97, 95); // Change the limits as needed
-				changeBackgroundColor('rr_low', '10', 12, 8); // Change the limits as needed
-				changeBackgroundColor('sc_low', '7000', 8000, 6000); // Change the limits as needed
-			</script>
 		</div>
 	</body>
 </html>
