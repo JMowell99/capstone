@@ -47,9 +47,13 @@ fetch(endpointUrl, getRequestOptions)
     document.getElementById('hr_high').textContent = `${heartRateHigh}`;
     document.getElementById('hr_avg').textContent = `${heartRateAvg.toFixed(2)}`;
 
-    document.getElementById('rr_low').textContent = `${respirationRateLow}`;
-    document.getElementById('rr_high').textContent = `${respirationRateHigh}`;
-    document.getElementById('rr_avg').textContent = `${respirationRateAvg.toFixed(2)}`;
+    document.getElementById('ol_low').textContent = `${respirationRateLow}`;
+    document.getElementById('ol_high').textContent = `${respirationRateHigh}`;
+    document.getElementById('ol_avg').textContent = `${respirationRateAvg.toFixed(2)}`;
+
+    document.getElementById('sc_low').textContent = `${stepCountLow}`;
+    document.getElementById('sc_high').textContent = `${stepCountHigh}`;
+    document.getElementById('sc_avg').textContent = `${stepCounntAvg.toFixed(2)}`;
 
     // Function to change background color based on value
     function changeBackgroundColor(elementId, lowerUnhealthyLimit, lowerDangerousLimit, higherUnhealthyLimit, higherDangerousLimit) {
@@ -79,10 +83,15 @@ fetch(endpointUrl, getRequestOptions)
     changeBackgroundColor("bt_high", 97, 95, 99, 103);
     changeBackgroundColor("bt_avg", 97, 95, 99, 103);
 
-    // Setting background color for respiration rate
-    changeBackgroundColor("rr_low", 12, 10, 15, 16);
-    changeBackgroundColor("rr_high", 12, 10, 15, 16);
-    changeBackgroundColor("rr_avg", 12, 10, 15, 16);
+    // Setting background color for oxygyn level
+    changeBackgroundColor("ol_low", 95, 88, 100, 100);
+    changeBackgroundColor("ol_high", 95, 88, 100, 100);
+    changeBackgroundColor("ol_avg", 95, 88, 100, 100);
+
+    // Setting background color for step count
+    changeBackgroundColor("ol_low", 8000, -1, 1000000, 1000000);
+    changeBackgroundColor("ol_high", 8000, -1, 1000000, 1000000);
+    changeBackgroundColor("ol_avg", 8000, -1, 1000000, 1000000);
 
   })
   .catch((error) => {
