@@ -28,8 +28,8 @@ class UserData(db.Model):
 
     
     def set_body_temp(self, body_temp):
-        if len(body_temp) > 10:
-            raise ValueError("Body temp list can have a maximum length of 10.")
+        if len(body_temp) > 100:
+            raise ValueError("Body temp list can have a maximum length of 100.")
         self.body_temp = pickle.dumps(body_temp)
     
     def get_body_temp(self):
@@ -38,6 +38,38 @@ class UserData(db.Model):
         else:
             return None
     
+    def set_heart_rate(self, heart_rate):
+        if len(heart_rate) > 100:
+            raise ValueError("Heart rate list can have a maximum length of 100.")
+        self.heart_rate = pickle.dumps(heart_rate)
+
+    def get_heart_rate(self):
+        if self.heart_rate is not None:
+            return pickle.loads(self.heart_rate)
+        else:
+            return None
+
+    def set_oxygen_level(self, oxygen_level):
+        if len(oxygen_level) > 100:
+            raise ValueError("Oxygen level list can have a maximum length of 100.")
+        self.oxygen_level = pickle.dumps(oxygen_level)
+
+    def get_oxygen_level(self):
+        if self.oxygen_level is not None:
+            return pickle.loads(self.oxygen_level)
+        else:
+            return None
+
+    def set_step_count(self, step_count):
+        if len(step_count) > 100:
+            raise ValueError("Step count list can have a maximum length of 100.")
+        self.step_count = pickle.dumps(step_count)
+
+    def get_step_count(self):
+        if self.step_count is not None:
+            return pickle.loads(self.step_count)
+        else:
+            return None
 ACCESS_TOKEN = "ECE3906"
 
 # Decorator to check if the request has a valid access token
@@ -127,7 +159,6 @@ def signup():
         
     else:
         return render_template('signup.html')
-
 @app.route('/about')
 @login_required
 def about():
@@ -138,27 +169,39 @@ def about():
 def health_data():
     if request.method == 'GET':
         user_id = request.args.get('user_id')
-        username = request.args.get('username')
-        password = request.args.get('password')
+
         if user_id:
-            health_data = UserData.query.filter_by(user_id=user_id).first()
-            if health_data:
-                return jsonify({'user_id': user_id, 'heart_rate': health_data.heart_rate, 'body_temp': health_data.body_temp, 'oxygen_level': health_data.oxygen_level, 'step_count': health_data.step_count}), 200
+            # Retrieve specific user data from the database
+            specific_user_data = UserData.query.filter_by(user_id=user_id).first()
+
+            if specific_user_data:
+                # Construct a dictionary for the specific user's data
+                result = {
+                    'user_id': specific_user_data.user_id,
+                    'heart_rate': pickle.loads(specific_user_data.heart_rate) if specific_user_data.heart_rate else [],
+                    'oxygen_level': pickle.loads(specific_user_data.oxygen_level) if specific_user_data.oxygen_level else [],
+                    'step_count': pickle.loads(specific_user_data.step_count) if specific_user_data.step_count else [],
+                }
+
+                return jsonify(result), 200
             else:
-                return jsonify({'message': 'Health data not found for the specified user.'}), 404
-        elif username and password:
-            user = UserData.query.filter_by(username=username, password=password).first()
-            if user:
-                user_id = user.user_id
-                health_data = UserData.query.filter_by(user_id=user_id).first()
-                if health_data:
-                    return jsonify({'user_id': user_id, 'heart_rate': health_data.heart_rate, 'body_temp': health_data.body_temp, 'oxygen_level': health_data.oxygen_level, 'step_count': health_data.step_count}), 200
-                else:
-                    return jsonify({'message': 'Health data not found for the specified user.'}), 404
-            else:
-                return jsonify({'message': 'Invalid username or password.'}), 401
+                return jsonify({'message': f'Health data not found for user with ID {user_id}.'}), 404
         else:
-                return jsonify({'message': 'Missing user ID or username/password.'}), 400
+            # Retrieve all user data from the database
+            all_user_data = UserData.query.all()
+
+            # Construct a list of dictionaries for all entries
+            result = []
+            for user_data in all_user_data:
+                entry = {
+                    'user_id': user_data.user_id,
+                    'heart_rate': pickle.loads(user_data.heart_rate) if user_data.heart_rate else [],
+                    'oxygen_level': pickle.loads(user_data.oxygen_level) if user_data.oxygen_level else [],
+                    'step_count': pickle.loads(user_data.step_count) if user_data.step_count else [],
+                }
+                result.append(entry)
+
+            return jsonify(result), 200
     elif request.method == 'POST':
         data = request.get_json()
         user_id = request.args.get('user_id')
@@ -171,30 +214,52 @@ def health_data():
             existing_user = UserData.query.filter_by(user_id=user_id).first()
 
             if existing_user:
-                # Deserialize existing data using pickle
-                existing_heart_rate = pickle.loads(existing_user.heart_rate) if existing_user.heart_rate else []
-                existing_oxygen_level = pickle.loads(existing_user.oxygen_level) if existing_user.oxygen_level else []
-                existing_step_count = pickle.loads(existing_user.step_count) if existing_user.step_count else []
+                # Get the existing data and append new data
+                existing_heart_rate = existing_user.get_heart_rate()
+                existing_oxygen_level = existing_user.get_oxygen_level()
+                existing_step_count = existing_user.get_step_count()
 
-                # Append new data to existing data
-                existing_heart_rate.extend(heart_rate)
-                existing_oxygen_level.extend(oxygen_level)
-                existing_step_count.extend(step_count)
+                # Remove the 10 oldest values if the list length exceeds 90
+                if len(existing_heart_rate) > 90:
+                    existing_heart_rate = existing_heart_rate[-90:] + heart_rate
+                    delete_message_heart_rate = 'Deleted oldest data.'
+                else:
+                    existing_heart_rate += heart_rate
+                    delete_message_heart_rate = 'No old data deleted.'
 
-                # Limit lists to 10 values
-                existing_user.heart_rate = pickle.dumps(existing_heart_rate[:10])
-                existing_user.oxygen_level = pickle.dumps(existing_oxygen_level[:10])
-                existing_user.step_count = pickle.dumps(existing_step_count[:10])
+                if len(existing_oxygen_level) > 90:
+                    existing_oxygen_level = existing_oxygen_level[-90:] + oxygen_level
+                    delete_message_oxygen_level = 'Deleted oldest data.'
+                else:
+                    existing_oxygen_level += oxygen_level
+                    delete_message_oxygen_level = 'No old data deleted.'
+
+                if len(existing_step_count) > 90:
+                    existing_step_count = existing_step_count[-90:] + step_count
+                    delete_message_step_count = 'Deleted oldest data.'
+                else:
+                    existing_step_count += step_count
+                    delete_message_step_count = 'No old data deleted.'
+
+                # Update the user object with the modified data
+                existing_user.set_heart_rate(existing_heart_rate)
+                existing_user.set_oxygen_level(existing_oxygen_level)
+                existing_user.set_step_count(existing_step_count)
 
                 db.session.commit()
-                return jsonify({'message': 'Health data appended successfully.'}), 200
+                return jsonify({
+                    'message': 'Health data appended successfully.',
+                    'delete_message_heart_rate': delete_message_heart_rate,
+                    'delete_message_oxygen_level': delete_message_oxygen_level,
+                    'delete_message_step_count': delete_message_step_count
+                }), 200
             else:
                 # Serialize new health data before storing it
                 new_health_data = UserData(
                     user_id=user_id,
-                    heart_rate=pickle.dumps(heart_rate[:10]),
-                    oxygen_level=pickle.dumps(oxygen_level[:10]),
-                    step_count=pickle.dumps(step_count[:10])
+                    heart_rate=pickle.dumps(heart_rate),
+                    oxygen_level=pickle.dumps(oxygen_level),
+                    step_count=pickle.dumps(step_count)
                 )
                 db.session.add(new_health_data)
                 db.session.commit()
@@ -202,6 +267,9 @@ def health_data():
         else:
             return jsonify({'message': 'Missing user ID, heart rate, oxygen level, or step count.'}), 400
 
+    else:
+        return jsonify({'message': 'Invalid request method.'}), 405
+        
 @app.route('/userData')
 @login_required
 def userData():
