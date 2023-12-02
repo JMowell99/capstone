@@ -63,7 +63,7 @@ class UserData(db.Model):
     def set_step_count(self, step_count):
         if len(step_count) > 100:
             raise ValueError("Step count list can have a maximum length of 100.")
-        self.step_count = pickle.dumps(step_count)
+        self.step_count = pickle.dumps((step_count / .36))
 
     def get_step_count(self):
         if self.step_count is not None:
@@ -94,16 +94,13 @@ def login():
             session['user_id'] = user.user_id
             return redirect(url_for('home'))
         else:
-            flash("Credentials not recognized")
+            session['show_popup'] = True
             return redirect('signup')
     else:
         if session.get('logged_in', False):
             return render_template('login.html')
-        
-        elif(session.get('logged_in', True)):
-            if session['logged_in'] == True:
-                return render_template('login.html', message='Login with newly created credentials')
-            
+        else:
+            return render_template('login.html', message='Login with newly created credentials')
 
 # Decorator to check if the user is logged in
 def login_required(f):
@@ -120,8 +117,10 @@ def login_required(f):
 def home():
     return render_template('index.html')
 
+
 @app.route('/signup', methods=['GET','POST'])
 def signup():
+
     token = ACCESS_TOKEN
     if request.method == 'POST':
         newUsername = request.form['username']
@@ -159,6 +158,7 @@ def signup():
         
     else:
         return render_template('signup.html')
+    
 @app.route('/about')
 @login_required
 def about():
@@ -209,37 +209,33 @@ def health_data():
         oxygen_level = data.get('oxygen_level')
         step_count = data.get('step_count')
 
-        if user_id and heart_rate and oxygen_level and step_count:
+        if user_id and (heart_rate is not None or oxygen_level is not None or step_count is not None):
             # Retrieve existing user data from the database
             existing_user = UserData.query.filter_by(user_id=user_id).first()
 
             if existing_user:
                 # Get the existing data and append new data
-                existing_heart_rate = existing_user.get_heart_rate()
-                existing_oxygen_level = existing_user.get_oxygen_level()
-                existing_step_count = existing_user.get_step_count()
+                existing_heart_rate = existing_user.get_heart_rate() or []
+                existing_oxygen_level = existing_user.get_oxygen_level() or []
+                existing_step_count = existing_user.get_step_count() or []
 
-                # Remove the 10 oldest values if the list length exceeds 90
-                if len(existing_heart_rate) > 90:
-                    existing_heart_rate = existing_heart_rate[-90:] + heart_rate
-                    delete_message_heart_rate = 'Deleted oldest data.'
-                else:
-                    existing_heart_rate += heart_rate
-                    delete_message_heart_rate = 'No old data deleted.'
+                # Append new data
+                if heart_rate is not None:
+                    existing_heart_rate.append(heart_rate)
+                if oxygen_level is not None:
+                    existing_oxygen_level.append(oxygen_level)
+                if step_count is not None:
+                    existing_step_count.append(step_count)
 
-                if len(existing_oxygen_level) > 90:
-                    existing_oxygen_level = existing_oxygen_level[-90:] + oxygen_level
-                    delete_message_oxygen_level = 'Deleted oldest data.'
-                else:
-                    existing_oxygen_level += oxygen_level
-                    delete_message_oxygen_level = 'No old data deleted.'
+                # Truncate data arrays if the length exceeds 100
+                if len(existing_heart_rate) > 100:
+                    existing_heart_rate = existing_heart_rate[-100:]
 
-                if len(existing_step_count) > 90:
-                    existing_step_count = existing_step_count[-90:] + step_count
-                    delete_message_step_count = 'Deleted oldest data.'
-                else:
-                    existing_step_count += step_count
-                    delete_message_step_count = 'No old data deleted.'
+                if len(existing_oxygen_level) > 100:
+                    existing_oxygen_level = existing_oxygen_level[-100:]
+
+                if len(existing_step_count) > 100:
+                    existing_step_count = existing_step_count[-100:]
 
                 # Update the user object with the modified data
                 existing_user.set_heart_rate(existing_heart_rate)
@@ -248,24 +244,21 @@ def health_data():
 
                 db.session.commit()
                 return jsonify({
-                    'message': 'Health data appended successfully.',
-                    'delete_message_heart_rate': delete_message_heart_rate,
-                    'delete_message_oxygen_level': delete_message_oxygen_level,
-                    'delete_message_step_count': delete_message_step_count
+                    'message': 'Health data appended successfully.'
                 }), 200
             else:
                 # Serialize new health data before storing it
                 new_health_data = UserData(
                     user_id=user_id,
-                    heart_rate=pickle.dumps(heart_rate),
-                    oxygen_level=pickle.dumps(oxygen_level),
-                    step_count=pickle.dumps(step_count)
+                    heart_rate=pickle.dumps([heart_rate]) if heart_rate is not None else None,
+                    oxygen_level=pickle.dumps([oxygen_level]) if oxygen_level is not None else None,
+                    step_count=pickle.dumps([step_count]) if step_count is not None else None
                 )
                 db.session.add(new_health_data)
                 db.session.commit()
                 return jsonify({'message': 'Health data added successfully.'}), 201
         else:
-            return jsonify({'message': 'Missing user ID, heart rate, oxygen level, or step count.'}), 400
+            return jsonify({'message': 'Missing user ID or at least one of heart rate, oxygen level, or step count.'}), 400
 
     else:
         return jsonify({'message': 'Invalid request method.'}), 405
@@ -283,6 +276,12 @@ def new_user():
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')
+
+        # Check if the username already exists in the database
+        existing_user = UserData.query.filter_by(username=username).first()
+        if existing_user:
+            return jsonify({'message': 'Username already exists. Please choose a different username.'}), 409
+        
         new_user = UserData(username=username, password=password)
         db.session.add(new_user)
         db.session.commit()

@@ -1,15 +1,3 @@
-/*
-
-This is on the github for the purpose of giving the rest of the team access to this code.
-
-It does not yet "work" but it does at least upload data to the website, just not properly formatted.
-
-I am going to come back to this later and get a working version
-
-*/
-
- 
-
 #include <ArduinoJson.h>
 
 #include <WiFi.h>
@@ -48,7 +36,7 @@ const char* password = "JesseMowell";
 
  
 
-const char* serverAddress = "192.168.129.243";
+const char* serverAddress = "192.168.47.243";
 
 const int serverPort = 3906;
 
@@ -296,7 +284,9 @@ void loop() {
 
   }
 
-  Serial.print("Heartrate data found");
+  serial.print("Heartrate data found");
+
+  serial.println(heartRate);
 
  
 

@@ -5,6 +5,20 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+
+	<!-- Include necessary CSS and JS libraries -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	{% if show_popup %}
+	<script>
+		$(document).ready(function(){
+			// Show the popup when the document is ready
+			$('#popupModal').modal('show');
+		});
+	</script>
+	{% endif %}
 </head>
 <body>
 	<div class="center">
@@ -20,6 +34,26 @@
 			<button type="submit">Login</button>
 		</form>
 	</div>
+	</div>
+	<!-- Popup Modal -->
+	<div class="modal" id="popupModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Invalid Credentials</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<p>Your credentials are not recognized. Please try again or sign up.</p>
+				</div>
+				<div class="modal-footer">
+					<a href="{{ url_for('login') }}" class="btn btn-primary">Try Again</a>
+					<a href="{{ url_for('signup') }}" class="btn btn-secondary">Sign Up</a>
+				</div>
+			</div>
+		</div>
 	</div>
 </body>
 </html>
