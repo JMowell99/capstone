@@ -63,7 +63,7 @@ class UserData(db.Model):
     def set_step_count(self, step_count):
         if len(step_count) > 100:
             raise ValueError("Step count list can have a maximum length of 100.")
-        self.step_count = pickle.dumps((step_count / .36))
+        self.step_count = pickle.dumps((step_count))
 
     def get_step_count(self):
         if self.step_count is not None:
@@ -355,5 +355,15 @@ curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ECE39
 
 
 curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ECE3906" "http://172.30.24.226:3906/healthData?user_id=1"
+
+git clone https://github.com/JMowell99/capstone.git
+cd capstone
+git checkout CAPSTONE-12
+python -m venv .venv
+source ./.venv/bin/activate
+pip install -r requirements.txt
+python main.py
+
+
 
 """
