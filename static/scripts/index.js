@@ -12,89 +12,84 @@ const getRequestOptions = {
   },
 };
 
-// Make a GET request to the /healthData endpoint with user_id and Authorization header
+// Make the API call using fetch
 fetch(endpointUrl, getRequestOptions)
-  .then((response) => {
+  .then(response => {
+    // Check if the response status is OK (200-299)
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
+    // Parse the JSON in the response
     return response.json();
   })
-  .then((data) => {
-    // Calculate low, high, and average values
-    const bodyTempValues = data.body_temp;
-    const heartRateValues = data.heart_rate;
-    const respirationRateValues = data.respiration_rate;
+  .then(data => {
+    // Display the raw data
+    console.log("Raw Data:", data);
 
-    const bodyTempLow = Math.min(...bodyTempValues);
-    const bodyTempHigh = Math.max(...bodyTempValues);
-    const bodyTempAvg = bodyTempValues.reduce((acc, val) => acc + val, 0) / bodyTempValues.length;
+    // Threshold values for background colors
+    const absoluteMax = 200;
+    const absoluteMin = 30;
+    const healthyMax = 100;
+    const healthyMin = 60;
 
-    const heartRateLow = Math.min(...heartRateValues);
-    const heartRateHigh = Math.max(...heartRateValues);
-    const heartRateAvg = heartRateValues.reduce((acc, val) => acc + val, 0) / heartRateValues.length;
+    // Initialize variables to store low, average, and high
+    let low = Infinity;
+    let high = -Infinity;
+    let sum = 0;
+    let count = 0;
 
-    const respirationRateLow = Math.min(...respirationRateValues);
-    const respirationRateHigh = Math.max(...respirationRateValues);
-    const respirationRateAvg = respirationRateValues.reduce((acc, val) => acc + val, 0) / respirationRateValues.length;
+    // Iterate through each array in 'heart_rate'
+    data.heart_rate.forEach(arr => {
+      const nonZeroValues = arr.filter(value => value !== 0);
+      if (nonZeroValues.length > 0) {
+        const currentLow = Math.min(...nonZeroValues);
+        const currentHigh = Math.max(...nonZeroValues);
+        const currentAverage = Math.round(
+          nonZeroValues.reduce((sum, value) => sum + value, 0) / nonZeroValues.length
+        );
 
-    // Update the content of the <td> elements with calculated values
-    document.getElementById('bt_low').textContent = `${bodyTempLow}`;
-    document.getElementById('bt_high').textContent = `${bodyTempHigh}`;
-    document.getElementById('bt_avg').textContent = `${bodyTempAvg.toFixed(2)}`;
-
-    document.getElementById('hr_low').textContent = `${heartRateLow}`;
-    document.getElementById('hr_high').textContent = `${heartRateHigh}`;
-    document.getElementById('hr_avg').textContent = `${heartRateAvg.toFixed(2)}`;
-
-    document.getElementById('ol_low').textContent = `${respirationRateLow}`;
-    document.getElementById('ol_high').textContent = `${respirationRateHigh}`;
-    document.getElementById('ol_avg').textContent = `${respirationRateAvg.toFixed(2)}`;
-
-    document.getElementById('sc_low').textContent = `${stepCountLow}`;
-    document.getElementById('sc_high').textContent = `${stepCountHigh}`;
-    document.getElementById('sc_avg').textContent = `${stepCounntAvg.toFixed(2)}`;
-
-    // Function to change background color based on value
-    function changeBackgroundColor(elementId, lowerUnhealthyLimit, lowerDangerousLimit, higherUnhealthyLimit, higherDangerousLimit) {
-      const element = document.getElementById(elementId);
-      const value = parseFloat(element.textContent);
-
-      if (!isNaN(value)) {
-        if (value < lowerDangerousLimit || value > higherDangerousLimit) {
-          element.style.backgroundColor = '#FF0000'; // Red for dangerous
-        }
-        else if (value < lowerUnhealthyLimit || value > higherUnhealthyLimit) {
-          element.style.backgroundColor = 'yellow'; // Yellow for unhealthy else
-        }
-        else {
-          element.style.backgroundColor = '#90EE90'; // Green for healthy
-        }
+        // Update low, high, and sum
+        low = Math.min(low, currentLow);
+        high = Math.max(high, currentHigh);
+        sum += currentAverage;
+        count += 1;
       }
-    }
+    });
 
-    // Setting background color for heart rate
-    changeBackgroundColor("hr_low", 60, 40, 180, 200);
-    changeBackgroundColor("hr_high", 60, 40, 180, 200);
-    changeBackgroundColor("hr_avg", 60, 40, 180, 200);
+    // Calculate the overall average
+    const overallAverage = count > 0 ? Math.round(sum / count) : 0;
 
-    // Settting background color for body temp
-    changeBackgroundColor("bt_low", 97, 95, 99, 103);
-    changeBackgroundColor("bt_high", 97, 95, 99, 103);
-    changeBackgroundColor("bt_avg", 97, 95, 99, 103);
+    // Update the content of the HTML elements with the calculated values
+    document.getElementById("hr_low").textContent = low;
+    document.getElementById("hr_avg").textContent = overallAverage;
+    document.getElementById("hr_high").textContent = high;
 
-    // Setting background color for oxygyn level
-    changeBackgroundColor("ol_low", 95, 88, 100, 100);
-    changeBackgroundColor("ol_high", 95, 88, 100, 100);
-    changeBackgroundColor("ol_avg", 95, 88, 100, 100);
-
-    // Setting background color for step count
-    changeBackgroundColor("ol_low", 8000, -1, 1000000, 1000000);
-    changeBackgroundColor("ol_high", 8000, -1, 1000000, 1000000);
-    changeBackgroundColor("ol_avg", 8000, -1, 1000000, 1000000);
-
+    // Update the background color of the <td> elements based on conditions
+    updateBackgroundColor("hr_low", low, absoluteMin, healthyMin, healthyMax, absoluteMax);
+    updateBackgroundColor("hr_avg", overallAverage, absoluteMin, healthyMin, healthyMax, absoluteMax);
+    updateBackgroundColor("hr_high", high, absoluteMin, healthyMin, healthyMax, absoluteMax);
   })
-  .catch((error) => {
-    // Handle errors here
+  .catch(error => {
+    // Handle any errors that occurred during the fetch
     console.error('Fetch error:', error);
   });
+
+// Function to update the background color based on four threshold ranges
+function updateBackgroundColor(elementId, value, absoluteMin, healthyMin, healthyMax, absoluteMax) {
+  const tdElement = document.getElementById(elementId);
+
+  console.log(`Checking value ${value}:`);
+  console.log(`  Healthy range: ${healthyMin} - ${healthyMax}`);
+  console.log(`  Absolute range: ${absoluteMin} - ${absoluteMax}`);
+
+  if (value >= healthyMin && value <= healthyMax) {
+    tdElement.style.backgroundColor = '#90EE90'; // Light Green
+    console.log('  Light Green');
+  } else if (value < absoluteMin || value > absoluteMax) {
+    tdElement.style.backgroundColor = '#FF0000'; // Red
+    console.log('  Red');
+  } else {
+    tdElement.style.backgroundColor = 'yellow'; // Yellow
+    console.log('  Yellow');
+  }
+}
