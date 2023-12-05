@@ -347,23 +347,3 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(host=ip, port='3906', debug=True)
-
-"""
-
-curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer ECE3906" -d '{ "heart_rate": [67, 69, 73, 75, 78, 82, 84, 88, 91, 98], "body_temp": [97.9, 98.2, 98.4, 98.5, 98.6, 98.8, 98.9, 99.0, 99.1, 99.2], "respiration_rate": [17, 18, 18, 19, 19, 20, 20, 21, 21, 22], "oxygen_level": [95, 96, 97, 98, 99, 98, 97, 96, 95, 94], "step_count": [500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400]}' "http://172.30.24.226:3906/healthData?user_id=1"
-
-
-
-curl -X GET -H "Content-Type: application/json" -H "Authorization: Bearer ECE3906" "http://172.30.24.226:3906/healthData?user_id=1"
-
-git clone https://github.com/JMowell99/capstone.git
-cd capstone
-git checkout CAPSTONE-12
-python -m venv .venv
-source ./.venv/bin/activate
-pip install -r requirements.txt
-python main.py
-
-
-
-"""
