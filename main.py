@@ -214,33 +214,30 @@ def health_data():
             existing_user = UserData.query.filter_by(user_id=user_id).first()
 
             if existing_user:
-                # Get the existing data and append new data
-                existing_heart_rate = existing_user.get_heart_rate() or []
-                existing_oxygen_level = existing_user.get_oxygen_level() or []
-                existing_step_count = existing_user.get_step_count() or []
+                # Get the existing data
+                existing_data = {
+                    'heart_rate': existing_user.get_heart_rate() or [],
+                    'oxygen_level': existing_user.get_oxygen_level() or [],
+                    'step_count': existing_user.get_step_count() or [],
+                }
 
                 # Append new data
                 if heart_rate is not None:
-                    existing_heart_rate.append(heart_rate)
+                    existing_data['heart_rate'].extend(heart_rate)
                 if oxygen_level is not None:
-                    existing_oxygen_level.append(oxygen_level)
+                    existing_data['oxygen_level'].extend(oxygen_level)
                 if step_count is not None:
-                    existing_step_count.append(step_count)
+                    existing_data['step_count'].extend(step_count)
 
                 # Truncate data arrays if the length exceeds 100
-                if len(existing_heart_rate) > 100:
-                    existing_heart_rate = existing_heart_rate[-100:]
-
-                if len(existing_oxygen_level) > 100:
-                    existing_oxygen_level = existing_oxygen_level[-100:]
-
-                if len(existing_step_count) > 100:
-                    existing_step_count = existing_step_count[-100:]
+                for key in existing_data:
+                    if len(existing_data[key]) > 100:
+                        existing_data[key] = existing_data[key][-100:]
 
                 # Update the user object with the modified data
-                existing_user.set_heart_rate(existing_heart_rate)
-                existing_user.set_oxygen_level(existing_oxygen_level)
-                existing_user.set_step_count(existing_step_count)
+                existing_user.set_heart_rate(existing_data['heart_rate'])
+                existing_user.set_oxygen_level(existing_data['oxygen_level'])
+                existing_user.set_step_count(existing_data['step_count'])
 
                 db.session.commit()
                 return jsonify({
@@ -250,15 +247,16 @@ def health_data():
                 # Serialize new health data before storing it
                 new_health_data = UserData(
                     user_id=user_id,
-                    heart_rate=pickle.dumps([heart_rate]) if heart_rate is not None else None,
-                    oxygen_level=pickle.dumps([oxygen_level]) if oxygen_level is not None else None,
-                    step_count=pickle.dumps([step_count]) if step_count is not None else None
+                    heart_rate=pickle.dumps(heart_rate) if heart_rate is not None else None,
+                    oxygen_level=pickle.dumps(oxygen_level) if oxygen_level is not None else None,
+                    step_count=pickle.dumps(step_count) if step_count is not None else None
                 )
                 db.session.add(new_health_data)
                 db.session.commit()
                 return jsonify({'message': 'Health data added successfully.'}), 201
         else:
             return jsonify({'message': 'Missing user ID or at least one of heart rate, oxygen level, or step count.'}), 400
+
 
     else:
         return jsonify({'message': 'Invalid request method.'}), 405
