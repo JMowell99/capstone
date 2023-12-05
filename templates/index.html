@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 	<head>
 		<title>Team 02 Home Page</title>
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -76,5 +77,34 @@
 			</table>
 		</div>
 	</body>
+<head>
+	<title>Team 02 Home Page</title>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../static/css/styles.css">
+</head>
+<body>
+	{% include '/fragments/menu.html' %}
+	<script src="../static/scripts/scripts.js"></script>
+	<div class="center"><h1>Welcome!</h1>
+	<p>The time below is being collected from an API :)</p>
+	<p id="time"></p>
+    <button onclick="window.location.href='about'">About Us</button>
+	</div>
+	<script>
+		$(document).ready(function() {
+			$.ajax({
+				url: 'https://worldtimeapi.org/api/timezone/Etc/UTC',
+				method: 'GET',
+				success: function(response) {
+					var time = new Date(response.datetime);
+					$('#time').text('The current time is: ' + time.toLocaleString());
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			});
+		});
+	</script>
+</body>
 </html>
 
