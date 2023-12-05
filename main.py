@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 import platform
@@ -101,19 +101,6 @@ def login():
             return render_template('login.html')
         else:
             return render_template('login.html', message='Login with newly created credentials')
-        elif user == None:
-            flash('Username not foud in database, please try again', 'error')
-            return redirect(url_for('login'))
-        elif password != user.password:
-            flash('Incorrect password, please try again', 'error')
-            return redirect(url_for('login'))
-    else:
-        return render_template('login.html')
-
-@app.route('/logout', methods=['GET'])
-def logout():
-    session['logged_in'] = False
-    return redirect(url_for('login'))
 
 # Decorator to check if the user is logged in
 def login_required(f):
