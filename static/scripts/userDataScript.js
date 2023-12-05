@@ -8,14 +8,14 @@ fetch(`/healthData?user_id=${user_id}`, {
 })
   .then(response => response.json())
   .then(data => {
-    const bodyTemp = data.body_temp;
+    const oxygenLevel = data.oxygen_level;
     const heartRate = data.heart_rate;
-    const respirationRate = data.respiration_rate;
+    const stepCount = data.step_count;
     const timestamps = data.timestamps;
 
     const trace1 = {
       x: timestamps,
-      y: bodyTemp,
+      y: heartRate,
       type: 'line'
     };
     const layout1 = {
@@ -23,15 +23,15 @@ fetch(`/healthData?user_id=${user_id}`, {
         title: 'Time'
       },
       yaxis: {
-        title: 'Body Temperature (Fahrenheit)'
+        title: 'BPM (Beats per Minute)'
       },
-      displayModeBar: false, // Disable zoom and tools
-      staticPlot: true // Set staticPlot to true
+      displayModeBar: false,
+      staticPlot: true
     };
 
     const trace2 = {
       x: timestamps,
-      y: heartRate,
+      y: oxygenLevel,
       type: 'line'
     };
     const layout2 = {
@@ -39,15 +39,15 @@ fetch(`/healthData?user_id=${user_id}`, {
         title: 'Time'
       },
       yaxis: {
-        title: 'Heart Rate (beats per minute)'
+        title: 'Oxygen Level (%)'
       },
-      displayModeBar: false, // Disable zoom and tools
-      staticPlot: true // Set staticPlot to true
+      displayModeBar: false,
+      staticPlot: true
     };
 
     const trace3 = {
       x: timestamps,
-      y: respirationRate,
+      y: stepCount,
       type: 'line'
     };
     const layout3 = {
@@ -55,10 +55,10 @@ fetch(`/healthData?user_id=${user_id}`, {
         title: 'Time'
       },
       yaxis: {
-        title: 'Respiration Rate (breaths per minute)'
+        title: 'Step Count (Per Day)'
       },
-      displayModeBar: false, // Disable zoom and tools
-      staticPlot: true // Set staticPlot to true
+      displayModeBar: false,
+      staticPlot: true
     };
 
     const chartData1 = [trace1];
